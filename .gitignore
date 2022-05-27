@@ -41,4 +41,4 @@ testem.log
 Thumbs.db
 
 # Config Files
-.env
+tests/.env.example
