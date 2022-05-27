@@ -1,13 +1,13 @@
 version: '3'
 
 services:
-  mysql:
-    image: mysql:8
+  postgres:
+    image: postgres:14-alpine
     restart: always
+    command: postgres -c fsync=off -c synchronous_commit=off -c full_page_writes=off -c random_page_cost=1.0
     environment:
-      MYSQL_USER: '${MYSQL_USER:-test}'
-      MYSQL_PASSWORD: '${MYSQL_PASSWORD:-test}'
-      MYSQL_ROOT_PASSWORD: '${MYSQL_ROOT_PASSWORD:-root}'
-      MYSQL_DATABASE: test
+      POSTGRES_DB: test
+      POSTGRES_PASSWORD: '${POSTGRES_PASSWORD:-test}'
+      POSTGRES_USER: '${POSTGRES_USER:-test}'
     ports:
-      - '3306:3306'
+      - '5432:5432'

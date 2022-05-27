@@ -13,6 +13,7 @@
     "downlevelIteration": true,
     "esModuleInterop": true,
     "strict": true,
+    "allowJs": true,
     "noImplicitAny": true,
     "noImplicitThis": true,
     "noEmitOnError": true,
