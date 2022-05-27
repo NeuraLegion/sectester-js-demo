@@ -30,6 +30,8 @@ export class UsersService {
   }
 
   public async remove(id: number): Promise<void> {
-    await this.orm.em.removeAndFlush({ id });
+    const user = this.orm.em.getReference(User, id);
+
+    await this.orm.em.removeAndFlush(user);
   }
 }

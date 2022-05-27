@@ -21,7 +21,7 @@ export class UsersController {
   }
 
   @Get()
-  public findAll(@Query() query: Omit<Partial<User>, 'id'>): Promise<User[]> {
+  public findAll(@Query() query?: Omit<Partial<User>, 'id'>): Promise<User[]> {
     return this.usersService.findAll(query);
   }
 
