@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+  mysql:
+    image: mysql:8
+    restart: always
+    environment:
+      MYSQL_USER: '${MYSQL_USER:-test}'
+      MYSQL_PASSWORD: '${MYSQL_PASSWORD:-test}'
+      MYSQL_ROOT_PASSWORD: '${MYSQL_ROOT_PASSWORD:-root}'
+      MYSQL_DATABASE: test
+    ports:
+      - '3306:3306'

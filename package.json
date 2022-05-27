@@ -36,22 +36,51 @@
   "scripts": {
     "semantic-release": "semantic-release",
     "husky": "husky",
-    "tsc": "tsc",
-    "lint": "eslint -c .eslintrc.json src",
-    "format": "prettier --check src",
+    "nest": "nest",
+    "prettier": "prettier",
+    "jest": "jest",
+    "mikro-orm": "mikro-orm",
+    "prepare": "is-ci || husky install",
+    "prebuild": "rimraf dist",
+    "build": "nest build",
+    "migration:up": "mikro-orm migration:up",
+    "migration:down": "mikro-orm migration:down",
+    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
+    "start": "nest start",
+    "start:dev": "nest start --watch",
+    "start:debug": "nest start --debug --watch",
+    "start:prod": "node dist/main",
+    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
-    "build": "tsc -p tsconfig.json",
-    "prepare": "is-ci || husky install"
+    "test:watch": "jest --watch",
+    "test:cov": "jest --coverage",
+    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
+    "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "homepage": "https://github.com/NeuraLegion/sec-tester-js-demo#readme",
   "dependencies": {
+    "@mikro-orm/core": "^5.1.4",
+    "@mikro-orm/migrations": "^5.1.4",
+    "@mikro-orm/mysql": "^5.1.4",
+    "@mikro-orm/nestjs": "^5.0.1",
+    "@nestjs/common": "^8.4.5",
+    "@nestjs/config": "^2.0.1",
+    "@nestjs/core": "^8.4.5",
+    "@nestjs/platform-express": "^8.4.5",
+    "reflect-metadata": "^0.1.13",
+    "rxjs": "^7.5.5",
     "tslib": "~2.4.0"
   },
   "devDependencies": {
     "@commitlint/cli": "^17.0.1",
     "@commitlint/config-conventional": "^17.0.0",
+    "@mikro-orm/cli": "^5.1.4",
+    "@nestjs/cli": "^8.2.6",
+    "@nestjs/schematics": "^8.0.11",
+    "@nestjs/testing": "^8.4.5",
     "@semantic-release/exec": "^6.0.3",
     "@semantic-release/git": "^10.0.1",
+    "@types/express": "^4.17.13",
     "@types/jest": "^27.5.1",
     "@types/node": "~16.11.36",
     "@typescript-eslint/eslint-plugin": "^5.26.0",
@@ -66,8 +95,16 @@
     "jest": "^28.1.0",
     "lint-staged": "^12.4.2",
     "prettier": "^2.6.2",
+    "rimraf": "^3.0.2",
     "semantic-release": "~19.0.2",
     "ts-jest": "^28.0.3",
     "typescript": "~4.7.2"
+  },
+  "mikro-orm": {
+    "useTsNode": true,
+    "configPaths": [
+      "./src/mikro-orm.config.ts",
+      "./dist/mikro-orm.config.js"
+    ]
   }
 }

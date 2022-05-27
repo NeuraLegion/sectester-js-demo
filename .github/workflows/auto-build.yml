@@ -42,4 +42,8 @@ jobs:
         run: npm run build
 
       - name: Run tests
-        run: npm run test
+        run: |
+          docker compose up -d
+          npm run migration:up
+          npm run test --testTimeout 10000
+          docker compose down
