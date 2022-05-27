@@ -1,3 +1,14 @@
+# To run security tests in CI pipeline, you have to add the following step at the end:
+# ```yaml
+# - name: Run sec tests
+#  run: npm run test:sec -- --testTimeout 300000
+#  env:
+#    POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+#    POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+#    BRIGHT_TOKEN: ${{ secrets.BRIGHT_TOKEN }}
+# ```
+# Make sure that you set [the secretes](https://docs.github.com/en/actions/security-guides/encrypted-secrets#creating-encrypted-secrets-for-a-repository) above.
+
 name: CI / Automated testing
 
 on:
@@ -44,7 +55,7 @@ jobs:
         run: npm run test
 
       - name: Run e2e tests
-        run: npm run test:e2e -- --testTimeout 10000
+        run: npm run test:e2e
         env:
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
           POSTGRES_USER: ${{ secrets.POSTGRES_USER }}

@@ -1,7 +1,7 @@
 /** @type {import('@jest/types').Config.InitialOptions} */
 module.exports = {
   preset: '../jest.config.js',
-  testRegex: '.e2e-spec.ts$',
+  testRegex: '.*spec.ts$',
   globals: {
     'ts-jest': {
       tsconfig: '<rootDir>/../tsconfig.json'
