@@ -1,0 +1,73 @@
+{
+  "name": "sec-tester-js-demo",
+  "version": "0.0.0",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NeuraLegion/sec-tester-js-demo.git"
+  },
+  "author": {
+    "name": "Artem Derevnjuk",
+    "email": "artem.derevnjuk@neuralegion.com"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/NeuraLegion/sec-tester-js-demo/issues"
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  },
+  "engines": {
+    "node": ">=16",
+    "npm": "^8.1.0"
+  },
+  "lint-staged": {
+    "*.ts": [
+      "eslint --fix"
+    ],
+    "*.{ts,js,json,md}": [
+      "prettier --write"
+    ]
+  },
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "scripts": {
+    "semantic-release": "semantic-release",
+    "husky": "husky",
+    "tsc": "tsc",
+    "lint": "eslint -c .eslintrc.json src",
+    "format": "prettier --check src",
+    "test": "jest",
+    "build": "tsc -p tsconfig.json",
+    "prepare": "is-ci || husky install"
+  },
+  "homepage": "https://github.com/NeuraLegion/sec-tester-js-demo#readme",
+  "dependencies": {
+    "tslib": "~2.4.0"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^17.0.1",
+    "@commitlint/config-conventional": "^17.0.0",
+    "@semantic-release/exec": "^6.0.3",
+    "@semantic-release/git": "^10.0.1",
+    "@types/jest": "^27.5.1",
+    "@types/node": "~16.11.36",
+    "@typescript-eslint/eslint-plugin": "^5.26.0",
+    "@typescript-eslint/parser": "^5.26.0",
+    "eslint": "^8.16.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-import-resolver-typescript": "^2.7.1",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-jest": "^26.2.2",
+    "husky": "^8.0.1",
+    "is-ci": "~3.0.1",
+    "jest": "^28.1.0",
+    "lint-staged": "^12.4.2",
+    "prettier": "^2.6.2",
+    "semantic-release": "~19.0.2",
+    "ts-jest": "^28.0.3",
+    "typescript": "~4.7.2"
+  }
+}

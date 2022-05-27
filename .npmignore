@@ -1,0 +1,8 @@
+# Add files here to ignore them from npm publishing
+
+/node_modules
+/src
+/coverage
+/typings
+/.idea
+**/.*

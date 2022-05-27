@@ -1,0 +1,9 @@
+# Add files here to ignore them from eslint
+
+**/.*
+/tmp
+/dist
+/coverage
+/node_modules
+*-lock.json
+*.lock

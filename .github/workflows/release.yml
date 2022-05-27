@@ -1,0 +1,38 @@
+name: Semantic release
+
+on:
+  push:
+    branches:
+      - master
+
+env:
+  DEPENDENCIES_CACHE: npm-cache
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.GPR_TOKEN }}
+
+      - name: Set Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16
+
+      - name: Cache npm modules
+        uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ env.DEPENDENCIES_CACHE }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ env.DEPENDENCIES_CACHE }}-
+
+      - name: Install deps in quiet mode
+        run: npm ci -q
+
+      - name: Release a new version
+        run: npm run semantic-release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GPR_TOKEN }}

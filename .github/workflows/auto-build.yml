@@ -1,0 +1,45 @@
+name: CI / Automated testing
+
+on:
+  pull_request:
+    branches:
+      - '**'
+
+env:
+  DEPENDENCIES_CACHE: npm-cache
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    needs: install-deps
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Set Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16
+
+      - name: Cache npm modules
+        uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ env.DEPENDENCIES_CACHE }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ env.DEPENDENCIES_CACHE }}-
+
+      - name: Install deps in quiet mode
+        run: npm ci -q
+
+      - name: Lint application
+        run: npm run lint
+
+      - name: Check formatting
+        run: npm run format
+
+      - name: Build application
+        run: npm run build
+
+      - name: Run tests
+        run: npm run test
