@@ -92,7 +92,7 @@ describe('UserService', () => {
       const result = await service.findOne(input);
 
       expect(orm.em.getConnection().execute).toBeCalledWith(
-        `SELECT * FROM user WHERE id = ${input}`
+        `select * from "user" where "id" = ${input}`
       );
       expect(result).toEqual(oneUser);
     });

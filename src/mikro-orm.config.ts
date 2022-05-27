@@ -4,12 +4,12 @@ import { Options } from '@mikro-orm/core';
 
 const logger = new Logger('MikroORM');
 const config: Options = {
-  port: 3306,
-  type: 'mysql',
+  port: 5432,
+  type: 'postgresql',
   dbName: 'test',
   entities: [User],
-  user: process.env.MYSQL_USER,
-  password: process.env.MYSQL_PASSWORD,
+  user: process.env.POSTGRES_USER,
+  password: process.env.POSTGRES_PASSWORD,
   logger: logger.log.bind(logger),
   migrations: {
     snapshot: false,

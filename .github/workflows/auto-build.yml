@@ -24,7 +24,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ~/.npm
-          key: ${{ env.DEPENDENCIES_CACHE }}-${{ hashFiles('**/package-lock.json') }}
+          key: ${{ env.DEPENDENCIES_CACHE }}-${{ hashFiles('package-lock.json') }}
           restore-keys: |
             ${{ env.DEPENDENCIES_CACHE }}-
 
@@ -44,12 +44,7 @@ jobs:
         run: npm run test
 
       - name: Run e2e tests
-        run: |
-          docker compose up -d
-          npm run migration:up
-          npm run test:e2e --testTimeout 10000
-          docker compose down
-        continue-on-error: true
+        run: npm run test:e2e -- --testTimeout 10000
         env:
-          MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
-          MYSQL_USER: ${{ secrets.MYSQL_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}

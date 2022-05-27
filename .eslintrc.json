@@ -239,7 +239,7 @@
         "jest": true
       },
       "extends": ["plugin:jest/recommended"],
-      "files": ["*.spec.ts", "*.spec.tsx"],
+      "files": ["*spec.ts", "*spec.tsx", "test/**/*"],
       "rules": {
         "jest/prefer-expect-resolves": "error",
         "jest/prefer-todo": "error",
