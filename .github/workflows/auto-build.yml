@@ -40,9 +40,16 @@ jobs:
       - name: Build application
         run: npm run build
 
-      - name: Run tests
+      - name: Run unit tests
+        run: npm run test
+
+      - name: Run e2e tests
         run: |
           docker compose up -d
           npm run migration:up
-          npm run test --testTimeout 10000
+          npm run test:e2e --testTimeout 10000
           docker compose down
+        continue-on-error: true
+        env:
+          MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
+          MYSQL_USER: ${{ secrets.MYSQL_USER }}
