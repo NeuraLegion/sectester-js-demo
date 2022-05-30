@@ -1,11 +1,12 @@
-# How to contribute to Sec Tester SDK Demo
+# How to contribute to SecTester SDK Demo
 
 - [Your First Contribution](#your-first-contribution)
 - [Forks and Branches](#forks-and-branches)
   - [Start a feature branch](#start-a-feature-branch)
   - [Commit Message Format](#commit-message-format)
-- [How to work on Sec Tester SDK Demo](#how-to-work-on-sec-tester-sdk-demo)
+- [How to work on SecTester SDK Demo](#how-to-work-on-sectester-sdk-demo)
 - [Installation](#installation)
+  - [Run](#run)
   - [Build](#build)
   - [Tests](#tests)
   - [Linting](#linting)
@@ -36,10 +37,10 @@ The PR, which is **NOT** planned to be merged, has to be converted to draft PR.
 To release a new version, you should issue the following commands:
 
 ```bash
-git fetch origin
-git checkout master
-git merge --squash branch-name
-git commit -m 'message'
+$ git fetch origin
+$ git checkout master
+$ git merge --squash branch-name
+$ git commit -m 'message'
 ```
 
 Use `--squash`, to leave the history of commits in feature-branch and prevents the Git merge command from creating a merge commit.
@@ -49,8 +50,8 @@ Use `--squash`, to leave the history of commits in feature-branch and prevents t
 To create a feature branch you should issue the following commands:
 
 ```bash
-git fetch
-git checkout --no-track -b branch-name origin/master
+$ git fetch
+$ git checkout --no-track -b branch-name origin/master
 ```
 
 Each branch name consists of a **type**, **ref,** and **subject**.
@@ -143,7 +144,7 @@ revert: add the amount of requests per dispatched entry point
 Reverts commit 0000000
 ```
 
-## How to work on Sec Tester SDK Demo
+## How to work on SecTester SDK Demo
 
 To ensure consistency throughout the source code, keep these rules in mind as you are working:
 
@@ -161,17 +162,41 @@ To install all dependencies used by this project, issue this command in your ter
 $ npm ci
 ```
 
+### Run
+
+The whole list of required variables is described in .env file. Template for this dot env file is available in the root folder.
+
+To create `.env` file from the template, issue the following command:
+
+```bash
+$ cp .env.example .env
+```
+
+Then you have to build and run services with Docker, issue the command as follows:
+
+```bash
+$ docker compose -f docker-compose.yml up -d
+```
+
+Finally, perform this command in terminal to run the application:
+
+```bash
+$ npm start
+```
+
 ### Build
 
 The project can be built manually by issuing the following command:
 
 ```bash
-npm run build
+$ npm run build
 ```
 
 The build artifacts will be stored in the `dist` folder.
 
 ### Tests
+
+#### Running unit tests
 
 Run this command in terminal to execute the unit tests via [Jest](https://jestjs.io/):
 
@@ -179,7 +204,13 @@ Run this command in terminal to execute the unit tests via [Jest](https://jestjs
 $ npm t
 ```
 
-Set `NODE_ENV` variable to `test` if you want to use test mock and stubs, to reduce overhead.
+#### Running end-to-end tests
+
+Run his command in terminal to execute the end-to-end tests:
+
+```bash
+$ npm run test:e2e
+```
 
 ### Linting
 
