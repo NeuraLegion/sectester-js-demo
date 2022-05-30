@@ -1,5 +1,19 @@
 # SecTester SDK Demo
 
+## Table of contents
+
+- [About this project](#about-this-project)
+- [About SecTester](#about-sectester)
+- [About the SDK](#about-the-sdk)
+- [Usage](#usage)
+  - [Getting a Bright API key](#getting-a-bright-api-key)
+  - [A full configuration example](#a-full-configuration-example)
+  - [Recommended tests](#recommended-tests)
+  - [Example of a CI configuration](#example-of-a-ci-configuration)
+- [Documentation & Help](#documentation--help)
+- [Contributing](#contributing)
+- [License](#license)
+
 ## About this project
 
 This is a demo project for the Sec Tester JS SDK framework, with some installation and usage examples. We recommend forking it and playing around, that’s what it’s for!
