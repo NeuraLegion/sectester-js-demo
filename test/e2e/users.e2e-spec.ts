@@ -1,5 +1,5 @@
-import { CreateUserDto, UsersModule } from '../src/users';
-import config from '../src/mikro-orm.config';
+import { CreateUserDto, UsersModule } from '../../src/users';
+import config from '../../src/mikro-orm.config';
 import { Test, TestingModule } from '@nestjs/testing';
 import request from 'supertest';
 import { INestApplication } from '@nestjs/common';
@@ -14,7 +14,7 @@ describe('/users', () => {
     isActive: true
   };
 
-  let app: INestApplication;
+  let app!: INestApplication;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -54,6 +54,14 @@ describe('/users', () => {
     it('should return an user by ID', async () => {
       const res = await request(app.getHttpServer())
         .get('/users/1')
+        .expect(200);
+
+      expect(res).toMatchObject({ body: user });
+    });
+
+    it('should return an user if boolean-based blind is used', async () => {
+      const res = await request(app.getHttpServer())
+        .get('/users/1 AND 1858=1858')
         .expect(200);
 
       expect(res).toMatchObject({ body: user });
