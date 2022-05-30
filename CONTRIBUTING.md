@@ -1,5 +1,7 @@
 # How to contribute to SecTester SDK Demo
 
+## Table of contents
+
 - [Your First Contribution](#your-first-contribution)
 - [Forks and Branches](#forks-and-branches)
   - [Start a feature branch](#start-a-feature-branch)
