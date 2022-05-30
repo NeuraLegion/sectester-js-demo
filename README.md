@@ -7,6 +7,7 @@
 - [About the SDK](#about-the-sdk)
 - [Usage](#usage)
   - [Getting a Bright API key](#getting-a-bright-api-key)
+  - [Getting started](#getting-started)
   - [A full configuration example](#a-full-configuration-example)
   - [Recommended tests](#recommended-tests)
   - [Example of a CI configuration](#example-of-a-ci-configuration)
@@ -52,7 +53,7 @@ You can use the SDK command directly, or create a convenient wrapper for your pr
     1.  We recommend using your Github repository secrets feature to store the key, accessible via the `Settings > Security > Secrets > Actions` configuration. We use the ENV variable called `BRIGHT_TOKEN` in our examples
     2.  More info on [how to use ENV vars in Github actions](https://docs.github.com/en/actions/learn-github-actions/environment-variables)
 
-### A full configuration example
+### Getting started
 
 First install the dependencies:
 
@@ -66,7 +67,20 @@ Then you can start tests with SecTester as follows:
 $ npm run test:sec
 ```
 
+> ℹ️ Before that, you have to specify the required environment variables.
+> You can easily create a `.env` file from the template by issuing the following command:
+>
+> ```bash
+> $ cp .env.example .env
+> ```
+>
+> Once it is done, just put your previously received API key into the `BRIGHT_TOKEN` variable.
+
 This can take a few minutes.
+
+### A full configuration example
+
+_TBU_
 
 ### Recommended tests
 
@@ -126,7 +140,7 @@ steps:
       BRIGHT_TOKEN: ${{ secrets.BRIGHT_TOKEN }}
 ```
 
-For a full list of CI configuration examples, check out the docs below
+For a full list of CI configuration examples, check out the docs below.
 
 ## Documentation & Help
 
