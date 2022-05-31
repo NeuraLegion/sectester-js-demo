@@ -8,7 +8,6 @@
   - [Commit Message Format](#commit-message-format)
 - [How to work on SecTester SDK Demo](#how-to-work-on-sectester-sdk-demo)
 - [Installation](#installation)
-  - [Run](#run)
   - [Build](#build)
   - [Tests](#tests)
   - [Linting](#linting)
@@ -162,28 +161,6 @@ To install all dependencies used by this project, issue this command in your ter
 
 ```bash
 $ npm ci
-```
-
-### Run
-
-The whole list of required variables is described in .env file. Template for this dot env file is available in the root folder.
-
-To create `.env` file from the template, issue the following command:
-
-```bash
-$ cp .env.example .env
-```
-
-Then you have to build and run services with Docker, issue the command as follows:
-
-```bash
-$ docker compose -f docker-compose.yml up -d
-```
-
-Finally, perform this command in terminal to run the application:
-
-```bash
-$ npm start
 ```
 
 ### Build
