@@ -7,7 +7,7 @@
 - [About the SDK](#about-the-sdk)
 - [Usage](#usage)
   - [Getting a Bright API key](#getting-a-bright-api-key)
-  - [Getting started](#getting-started)
+  - [Explore the demo application](#explore-the-demo-application)
   - [A full configuration example](#a-full-configuration-example)
   - [Recommended tests](#recommended-tests)
   - [Example of a CI configuration](#example-of-a-ci-configuration)
@@ -17,7 +17,7 @@
 
 ## About this project
 
-This is a demo project for the Sec Tester JS SDK framework, with some installation and usage examples. We recommend forking it and playing around, that’s what it’s for!
+This is a demo project for the SecTester JS SDK framework, with some installation and usage examples. We recommend forking it and playing around, that’s what it’s for!
 
 ## About SecTester
 
@@ -53,40 +53,280 @@ You can use the SDK command directly, or create a convenient wrapper for your pr
     1.  We recommend using your Github repository secrets feature to store the key, accessible via the `Settings > Security > Secrets > Actions` configuration. We use the ENV variable called `BRIGHT_TOKEN` in our examples
     2.  More info on [how to use ENV vars in Github actions](https://docs.github.com/en/actions/learn-github-actions/environment-variables)
 
-### Getting started
+### Explore the demo application
 
-First install the dependencies:
+First, install the dependencies:
 
 ```bash
 $ npm ci
 ```
 
-Then you can start tests with SecTester as follows:
+The whole list of required variables to start the demo application is described in `.env.example` file. The template for this dot env file is available in the root folder.
+
+After that, you can easily create a `.env` file from the template by issuing the following command:
+
+```bash
+$ cp .env.example .env
+```
+
+Once it is done, just put your previously received API key into the `BRIGHT_TOKEN` variable.
+
+Then you have to build and run services with Docker, issue the command as follows:
+
+```bash
+$ docker compose -f docker-compose.yaml up -d
+```
+
+To initialize DB schema, you should execute a migration, as shown here:
+
+```bash
+$ npm run migration:up
+```
+
+Finally, perform this command in terminal to run the application:
+
+```bash
+$ npm start
+```
+
+While having the application running, open a browser and type http://localhost:3000/api and hit enter.
+You should see the Swagger UI page for that application that allows you to test the RESTFul CRUD API, like in the following screenshot:
+
+![Swagger UI](https://user-images.githubusercontent.com/38690835/171161124-92e0cc8c-90e1-4168-9242-63c6c598a26d.png)
+
+To explore the Swagger UI:
+
+- Click on the `POST /users` endpoint
+- Click on the "Try it out" button
+- Click on the blue "Execute" button
+- Then you should see a view similar to the following, where you can see the JSON returned from the API:
+
+![Swagger UI](https://user-images.githubusercontent.com/38690835/171161927-0cb03d0b-228c-44e5-aa0e-07653c02e529.png)
+
+Then you can start tests with SecTester against these endpoints as follows:
 
 ```bash
 $ npm run test:sec
 ```
 
-> ℹ️ Before that, you have to specify the required environment variables.
-> You can easily create a `.env` file from the template by issuing the following command:
->
-> ```bash
-> $ cp .env.example .env
-> ```
->
-> Once it is done, just put your previously received API key into the `BRIGHT_TOKEN` variable.
+> You will find tests written with SecTester in the `./test/sec` folder.
 
-This can take a few minutes.
+This can take a few minutes, and then you should see the result, like in the following screenshot:
+
+```text
+ FAIL  test/sec/users.e2e-spec.ts (453.752 s)
+  /users
+    POST /
+      ✓ should not have XSS (168279 ms)
+    GET /:id
+      ✕ should not have SQLi (282227 ms)
+
+  ● /users › GET /:id › should not have SQLi
+
+    IssueFound: Target is vulnerable
+
+    Issue in Bright UI:   https://app.neuralegion.com/scans/mKScKCEJRq2nvVkzEHUArB/issues/4rXuWAQTekbJfa9Rc7vHAX
+    Name:                 SQL Injection: Blind Boolean Based
+    Severity:             High
+    Remediation:
+    If available, use structured mechanisms that automatically enforce the separation between data and code. These mechanisms may be able to provide the relevant quoting, encoding, and validation automatically, instead of relying on the developer to provide this capability at every point where output is generated. Process SQL queries using prepared statements, parameterized queries, or stored procedures. These features should accept parameters or variables and support strong typing. Do not dynamically construct and execute query strings within these features using 'exec' or similar functionality, since this may re-introduce the possibility of SQL injection
+    Details:
+    A SQL injection attack consists of insertion or 'injection' of a SQL query via the input data from the client to the application. A successful SQL injection exploit can read sensitive data from the database, modify database data (Insert/Update/Delete), execute administration operations on the database (such as shutdown the DBMS), recover the content of a given file present on the DBMS file system and in some cases issue commands to the operating system. SQL injection attacks are a type of injection attack, in which SQL commands are injected into data-plane input in order to effect the execution of predefined SQL commands, In a BLIND SQLi scenario there is no response data, but the application is still vulnerable via boolean-based (10=10) and other techniques.
+    Extra Details:
+    ● Injection Points
+        Parameter: #1* (URI)
+            Type: boolean-based blind
+            Title: AND boolean-based blind - WHERE or HAVING clause
+            Payload: http://localhost:56774/users/1 AND 2028=2028
+        Database Banner: 'postgresql 14.3 on x86_64-pc-linux-musl, compiled by gcc (alpine 11.2.1_git20220219) 11.2.1 20220219, 64-bit'
+
+    References:
+    ● https://cwe.mitre.org/data/definitions/89.html
+    ● https://www.owasp.org/index.php/Blind_SQL_Injection
+    ● https://www.neuralegion.com/blog/blind-sql-injection/
+    ● https://kb.neuralegion.com/#/guide/vulnerabilities/32-sql-injection.md
+
+      at SecScan.assert (../packages/runner/src/lib/SecScan.ts:59:13)
+          at runMicrotasks (<anonymous>)
+      at SecScan.run (../packages/runner/src/lib/SecScan.ts:37:7)
+      at Object.<anonymous> (sec/users.e2e-spec.ts:71:7)
+
+Test Suites: 1 failed, 1 total
+Tests:       1 failed, 1 passed, 2 total
+Snapshots:   0 total
+Time:        453.805 s
+Ran all test suites matching /test\/sec/i.
+```
 
 ### A full configuration example
 
-_TBU_
+In the following example, we will test the RESTFul CRUD API. [Jest](https://github.com/facebook/jest) is provided as the testing framework, that provides assert functions and test-double utilities that help with mocking, spying, etc.
+
+To start the webserver within the same process with tests, not in a remote environment or container, we use Nest.js [testing utilities](https://docs.nestjs.com/fundamentals/testing#testing-utilities):
+
+```ts
+import { UsersModule } from '../../src/users';
+import config from '../../src/mikro-orm.config';
+import { INestApplication } from '@nestjs/common';
+import { Test, TestingModule } from '@nestjs/testing';
+import { MikroOrmModule } from '@mikro-orm/nestjs';
+
+describe('/users', () => {
+  let app!: INestApplication;
+
+  beforeAll(async () => {
+    const moduleFixture: TestingModule = await Test.createTestingModule({
+      imports: [UsersModule, MikroOrmModule.forRoot(config)]
+    }).compile();
+
+    app = moduleFixture.createNestApplication();
+    await app.init();
+  });
+
+  afterAll(() => app.close());
+});
+```
+
+The `@sec-tester/runner` package provides a set of utilities that allows scanning the demo application for vulnerabilities. Let's rewrite the previous example using the built-in `SecRunner` class:
+
+```ts
+let runner!: SecRunner;
+let app!: INestApplication;
+
+// ...
+
+beforeEach(async () => {
+  runner = new SecRunner({ hostname: 'app.neuralegion.com' });
+
+  await runner.init();
+});
+
+afterEach(() => runner.clear());
+```
+
+To set up a runner, create a `SecRunner` instance passing a configuration as follows:
+
+```ts
+import { SecRunner } from '@sec-tester/runner';
+
+const runner = new SecRunner({ hostname: 'app.neuralegion.com' });
+```
+
+After that, you have to initialize a `SecRunner` instance:
+
+```ts
+await runner.init();
+```
+
+The runner is now ready to perform your tests. To start scanning your endpoint, first, you have to create a `SecScan` instance.
+
+Let's verify the `GET /users/:id` endpoint for SQLi:
+
+```ts
+describe('GET /:id', () => {
+  it('should not have SQLi', async () => {
+    const scan = runner.createScan({
+      tests: [TestType.SQLI]
+    });
+  });
+});
+```
+
+To clarify an attack surface and speed up the test, we suggest making clear where to discover parameters according to the source code.
+
+```ts
+@Controller('users')
+export class UsersController {
+  constructor(private readonly usersService: UsersService) {}
+
+  @Get(':id')
+  public findOne(@Param('id') id: number): Promise<User | null> {
+    return this.usersService.findOne(id);
+  }
+}
+```
+
+For the example above, it should look like this:
+
+```ts
+const scan = runner.createScan({
+  tests: [TestType.SQLI],
+  attackParamLocations: [AttackParamLocation.PATH]
+});
+```
+
+Finally, to run a scan against the endpoint, you have to obtain a port to which the server listens. For that, we should adjust a bit the example above:
+
+```ts
+let runner!: SecRunner;
+let app!: INestApplication;
+let baseUrl!: string;
+
+beforeAll(async () => {
+  // ...
+
+  const server = app.getHttpServer();
+
+  server.listen(0);
+
+  const port = server.address().port;
+  const protocol = app instanceof Server ? 'https' : 'http';
+  baseUrl = `${protocol}://localhost:${port}`;
+});
+```
+
+Now, you can use the `baseUrl` to set up a target:
+
+```ts
+await scan.run({
+  method: 'GET',
+  url: `${baseUrl}/users/1`
+});
+```
+
+By default, each found issue will cause the scan to stop. To control this behavior you can set a severity threshold using the \`threshold\` method. Since the SQLi is considered to be high severity issue, we can pass `Severity.HIGH` for stricter checks:
+
+```ts
+scan.threshold(Severity.HIGH);
+```
+
+To avoid long-running test, you can specify a timeout, to say how long to wait before aborting it:
+
+```ts
+scan.timeout(300000);
+```
+
+To make sure that Jest won't abort tests early, you should align a test timeout with a scan timeout as follows:
+
+```ts
+jest.setTimeout(300000);
+```
+
+Finally, the test should look like this:
+
+```ts
+it('should not have SQLi', async () => {
+  await runner
+    .createScan({
+      tests: [TestType.SQLI],
+      attackParamLocations: [AttackParamLocation.PATH]
+    })
+    .threshold(Severity.MEDIUM)
+    .timeout(300000)
+    .run({
+      method: 'GET',
+      url: `${baseUrl}/users/1`
+    });
+});
+```
+
+Full documentation can be found in [runner](https://github.com/NeuraLegion/sec-tester-js/tree/master/packages/runner).
 
 ### Recommended tests
 
 |                                                                                  |                                                                                                                                              |                              |                                                                                                                                                                                                                                                                                                                                                                                                                              |
 | -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Test name**                                                                    | **Description**                                                                                                                              | **Usage in Sec Tester**      | **Detectable vulnerabilities**                                                                                                                                                                                                                                                                                                                                                                                               |
+| **Test name**                                                                    | **Description**                                                                                                                              | **Usage in SecTester**       | **Detectable vulnerabilities**                                                                                                                                                                                                                                                                                                                                                                                               |
 | **Broken JWT Authentication**                                                    | Tests for secure implementation of JSON Web Token (JWT) in the application                                                                   | `jwt`                        | - [Broken JWT Authentication](https://docs.brightsec.com/docs/broken-jwt-authentication)                                                                                                                                                                                                                                                                                                                                     |
 | **Broken SAML Authentication**                                                   | Tests for secure implementation of SAML authentication in the application                                                                    | `broken_saml_auth`           | - [Broken SAML Authentication](https://docs.brightsec.com/docs/broken-saml-authentication)                                                                                                                                                                                                                                                                                                                                   |
 | **Brute Force Login**                                                            | Tests for availability of commonly used credentials                                                                                          | `brute_force_login`          | - [Brute Force Login](https://docs.brightsec.com/docs/brute-force-login)                                                                                                                                                                                                                                                                                                                                                     |
@@ -133,11 +373,12 @@ You can integrate this library into any CI you use, for that you will need to ad
 ```yaml
 steps:
   - name: Run sec tests
-    run: npm run test:sec -- --testTimeout 300000
+    run: npm run test:sec
     env:
       POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
       POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
       BRIGHT_TOKEN: ${{ secrets.BRIGHT_TOKEN }}
+      BRIGHT_HOSTNAME: app.neuralegion.com
 ```
 
 For a full list of CI configuration examples, check out the docs below.
