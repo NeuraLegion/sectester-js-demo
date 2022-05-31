@@ -386,8 +386,8 @@ For a full list of CI configuration examples, check out the docs below.
 
 Please read [contributing guidelines here](./CONTRIBUTING.md).
 
-<a href="https://github.com/NeuraLegion/sec-tester-js-demo/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=NeuraLegion/sec-tester-js-demo"/>
+<a href="https://github.com/NeuraLegion/sectester-js-demo/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=NeuraLegion/sectester-js-demo"/>
 </a>
 
 ## License
