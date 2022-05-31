@@ -16,7 +16,6 @@ module.exports = {
   },
   maxWorkers: '25%',
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
-  setupFiles: ['dotenv/config'],
   coverageDirectory: '<rootDir>/coverage',
   testPathIgnorePatterns: ['<rootDir>/node_modules/'],
   moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths ?? [], {

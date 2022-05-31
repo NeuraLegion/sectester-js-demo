@@ -9,6 +9,9 @@ import { MikroOrmModule } from '@mikro-orm/nestjs';
 import { Server } from 'https';
 
 describe('/users', () => {
+  const timeout = 300000;
+  jest.setTimeout(timeout);
+
   let runner!: SecRunner;
   let app!: INestApplication;
   let baseUrl!: string;
@@ -37,7 +40,8 @@ describe('/users', () => {
   afterAll(() => app.close());
 
   beforeEach(async () => {
-    runner = new SecRunner({ hostname: 'app.neuralegion.com' });
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    runner = new SecRunner({ hostname: process.env.BRIGHT_HOSTNAME! });
 
     await runner.init();
   });
@@ -53,7 +57,7 @@ describe('/users', () => {
           attackParamLocations: [AttackParamLocation.BODY]
         })
         .threshold(Severity.MEDIUM)
-        .timeout(300000)
+        .timeout(timeout)
         .run({
           method: 'POST',
           url: `${baseUrl}/users`,
@@ -71,7 +75,7 @@ describe('/users', () => {
           attackParamLocations: [AttackParamLocation.PATH]
         })
         .threshold(Severity.MEDIUM)
-        .timeout(300000)
+        .timeout(timeout)
         .run({
           method: 'GET',
           url: `${baseUrl}/users/1`
