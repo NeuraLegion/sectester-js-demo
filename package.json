@@ -68,8 +68,10 @@
     "@nestjs/config": "^2.0.1",
     "@nestjs/core": "^8.4.5",
     "@nestjs/platform-express": "^8.4.5",
+    "@nestjs/swagger": "^5.2.1",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.5.5",
+    "swagger-ui-express": "^4.4.0",
     "tslib": "~2.4.0"
   },
   "devDependencies": {
