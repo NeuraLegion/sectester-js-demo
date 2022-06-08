@@ -25,7 +25,9 @@ describe('/users', () => {
       ]
     }).compile();
 
-    app = moduleFixture.createNestApplication();
+    app = moduleFixture.createNestApplication(undefined, {
+      logger: false
+    });
     await app.init();
 
     const server = app.getHttpServer();
