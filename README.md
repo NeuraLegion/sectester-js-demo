@@ -4,9 +4,9 @@
 
 - [About this project](#about-this-project)
 - [About SecTester](#about-sectester)
-- [About the SDK](#about-the-sdk)
-- [Usage](#usage)
-  - [Getting a Bright API key](#getting-a-bright-api-key)
+- [Setup](#setup)
+  - [Fork and clone this repo](#fork-and-clone-this-repo)
+  - [Get a Bright API key](#get-a-bright-api-key)
   - [Explore the demo application](#explore-the-demo-application)
   - [A full configuration example](#a-full-configuration-example)
   - [Recommended tests](#recommended-tests)
@@ -17,7 +17,7 @@
 
 ## About this project
 
-This is a demo project for the SecTester JS SDK framework, with some installation and usage examples. We recommend forking it and playing around, that’s what it’s for!
+This is a demo project for the [SecTester JS SDK framework](https://github.com/NeuraLegion/sectester-js), with some installation and usage examples. We recommend forking it and playing around, that’s what it’s for!
 
 ## About SecTester
 
@@ -31,37 +31,40 @@ With SecTester you can:
 - Run security scans at the speed of unit tests
 - Find vulnerabilities with no false positives, before you finalize your Pull Request
 
-Trying out Bright’s SecTester is free 💸, so let’s get started!
+Trying out Bright’s SecTester is _**free**_ 💸, so let’s get started!
 
-> ⚠️ The SecTester project is currently in beta as an early-access tool. We are looking for your feedback to make it the best possible solution for developers, aimed to be used as part of your team’s SDLC. We apologize if not everything will work smoothly from the start, and hope a few bugs or missing features will be no match for you!
+> ⚠️ **Disclaimer**
+>
+> The SecTester project is currently in beta as an early-access tool. We are looking for your feedback to make it the best possible solution for developers, aimed to be used as part of your team’s SDLC. We apologize if not everything will work smoothly from the start, and hope a few bugs or missing features will be no match for you!
 >
 > Thank you! We appreciate your help and feedback!
 
-## About the SDK
+## Setup
 
-The SDK is designed to provide all the basic tools and functions that will allow you to create the interactions between the Bright scanning engine, run scans on any target and get the results, all in your own console or CI environment.
+### Fork and clone this repo
 
-You can use the SDK command directly, or create a convenient wrapper for your project to integrate security testing directly into your web or testing framework of choice (you can see some examples in the Documentation section)
+1.  Press the ‘fork’ button to make a copy of this repo in your own GH account
+2.  In your forked repo, clone this project down to your local machine using either SSH or HTTP
 
-## Usage
+### Get a Bright API key
 
-### Getting a Bright API key
-
-1.  Register for a free account at Bright [**signup**](https://app.neuralegion.com/signup)
-2.  Create a Bright API key (personal key from your [**UI**](https://docs.brightsec.com/docs/manage-your-personal-account#manage-your-personal-api-keys-authentication-tokens)
-3.  Save the Bright API key in your project
+1.  Register for a free account at Bright’s [**signup**](https://app.neuralegion.com/signup) page
+2.  Optional: Skip the quickstart wizard and go directly to [**User API key creation**](https://app.neuralegion.com/profile)
+3.  Create a Bright API key ([**check out our doc on how to create a user key**](https://docs.brightsec.com/docs/manage-your-personal-account#manage-your-personal-api-keys-authentication-tokens))
+4.  Save the Bright API key
     1.  We recommend using your Github repository secrets feature to store the key, accessible via the `Settings > Security > Secrets > Actions` configuration. We use the ENV variable called `BRIGHT_TOKEN` in our examples
-    2.  More info on [how to use ENV vars in Github actions](https://docs.github.com/en/actions/learn-github-actions/environment-variables)
+    2.  If you don’t use that option, make sure you save the key in a secure location. You will need to access it later on in the project but will not be able to view it again.
+    3.  More info on [**how to use ENV vars in Github actions**](https://docs.github.com/en/actions/learn-github-actions/environment-variables)
 
 ### Explore the demo application
 
-First, install the dependencies:
+Navigate to your local version of this project. Then, in your command line, install the dependencies:
 
 ```bash
 $ npm ci
 ```
 
-The whole list of required variables to start the demo application is described in `.env.example` file. The template for this dot env file is available in the root folder.
+The whole list of required variables to start the demo application is described in `.env.example` file. The template for this .env file is available in the root folder.
 
 After that, you can easily create a `.env` file from the template by issuing the following command:
 
@@ -69,9 +72,9 @@ After that, you can easily create a `.env` file from the template by issuing the
 $ cp .env.example .env
 ```
 
-Once it is done, just put your previously received API key into the `BRIGHT_TOKEN` variable.
+Once it is done, just put your previously received API key into the `BRIGHT_TOKEN` variable in your .env file.
 
-Then you have to build and run services with Docker, issue the command as follows:
+Then you have to build and run services with Docker. Start Docker, and issue the command as follows:
 
 ```bash
 $ docker compose -f docker-compose.yaml up -d
@@ -89,7 +92,7 @@ Finally, perform this command in terminal to run the application:
 $ npm start
 ```
 
-While having the application running, open a browser and type http://localhost:3000/api and hit enter.
+While having the application running, open a browser and type `http://localhost:3000/api`, and hit enter.
 You should see the Swagger UI page for that application that allows you to test the RESTFul CRUD API, like in the following screenshot:
 
 ![Swagger UI](https://user-images.githubusercontent.com/38690835/171161124-92e0cc8c-90e1-4168-9242-63c6c598a26d.png)
@@ -103,7 +106,7 @@ To explore the Swagger UI:
 
 ![Swagger UI](https://user-images.githubusercontent.com/38690835/171161927-0cb03d0b-228c-44e5-aa0e-07653c02e529.png)
 
-Then you can start tests with SecTester against these endpoints as follows:
+Then you can start tests with SecTester against these endpoints as follows (make sure you use a new terminal window, as the original is still running the API for us!)
 
 ```bash
 $ npm run test:sec
@@ -160,11 +163,12 @@ Ran all test suites matching /test\/sec/i.
 
 ### A full configuration example
 
-In the following example, we will test the RESTFul CRUD API. [Jest](https://github.com/facebook/jest) is provided as the testing framework, that provides assert functions and test-double utilities that help with mocking, spying, etc.
+Now you will look under the hood to see how this all works. In the following example, we will test the RESTFul CRUD API for any intances SQL injection. [Jest](https://github.com/facebook/jest) is provided as the testing framework, that provides assert functions and test-double utilities that help with mocking, spying, etc.
 
-To start the webserver within the same process with tests, not in a remote environment or container, we use Nest.js [testing utilities](https://docs.nestjs.com/fundamentals/testing#testing-utilities):
+To start the webserver within the same process with tests, not in a remote environment or container, we use Nest.js [testing utilities](https://docs.nestjs.com/fundamentals/testing#testing-utilities). You don’t have to use Nest.js, but it is what we chose for this project. The code is as follows:
 
 ```ts
+// ./test/sec/users.e2e-spec.ts
 import { UsersModule } from '../../src/users';
 import config from '../../src/mikro-orm.config';
 import { INestApplication } from '@nestjs/common';
@@ -187,7 +191,7 @@ describe('/users', () => {
 });
 ```
 
-The `@sec-tester/runner` package provides a set of utilities that allows scanning the demo application for vulnerabilities. Let's rewrite the previous example using the built-in `SecRunner` class:
+The [`@sectester/runner`](https://github.com/NeuraLegion/sectester-js/tree/master/packages/runner) package provides a set of utilities that allows scanning the demo application for vulnerabilities. Let's rewrite the previous example using the built-in `SecRunner` class:
 
 ```ts
 let runner!: SecRunner;
@@ -207,7 +211,7 @@ afterEach(() => runner.clear());
 To set up a runner, create a `SecRunner` instance passing a configuration as follows:
 
 ```ts
-import { SecRunner } from '@sec-tester/runner';
+import { SecRunner } from '@sectester/runner';
 
 const runner = new SecRunner({ hostname: 'app.neuralegion.com' });
 ```
@@ -219,6 +223,8 @@ await runner.init();
 ```
 
 The runner is now ready to perform your tests. To start scanning your endpoint, first, you have to create a `SecScan` instance.
+
+Now, you will write and run your first unit test!
 
 Let's verify the `GET /users/:id` endpoint for SQLi:
 
@@ -232,9 +238,100 @@ describe('GET /:id', () => {
 });
 ```
 
+This will raise an exception if the test fails.
+
+```ts
+// ./test/sec/users.e2e-spec.ts
+import { UsersModule } from '../../src/users';
+import config from '../../src/mikro-orm.config';
+import { SecRunner } from '@sectester/runner';
+import { AttackParamLocation, Severity, TestType } from '@sectester/scan';
+import { INestApplication } from '@nestjs/common';
+import { Test, TestingModule } from '@nestjs/testing';
+import { ConfigModule } from '@nestjs/config';
+import { MikroOrmModule } from '@mikro-orm/nestjs';
+import { Server } from 'https';
+
+describe('/users', () => {
+  const timeout = 300000;
+  jest.setTimeout(timeout);
+
+  let runner!: SecRunner;
+  let app!: INestApplication;
+  let baseUrl!: string;
+
+  beforeAll(async () => {
+    const moduleFixture: TestingModule = await Test.createTestingModule({
+      imports: [
+        UsersModule,
+        ConfigModule.forRoot(),
+        MikroOrmModule.forRoot(config)
+      ]
+    }).compile();
+
+    app = moduleFixture.createNestApplication();
+    await app.init();
+
+    const server = app.getHttpServer();
+
+    server.listen(0);
+
+    const port = server.address().port;
+    const protocol = app instanceof Server ? 'https' : 'http';
+    baseUrl = `${protocol}://localhost:${port}`;
+  });
+
+  afterAll(() => app.close());
+
+  beforeEach(async () => {
+    runner = new SecRunner({ hostname: process.env.BRIGHT_HOSTNAME! });
+
+    await runner.init();
+  });
+
+  afterEach(() => runner.clear());
+
+  describe('POST /', () => {
+    it('should not have XSS', async () => {
+      await runner
+        .createScan({
+          name: expect.getState().currentTestName,
+          tests: [TestType.XSS],
+          attackParamLocations: [AttackParamLocation.BODY]
+        })
+        .threshold(Severity.MEDIUM)
+        .timeout(timeout)
+        .run({
+          method: 'POST',
+          url: `${baseUrl}/users`,
+          body: { firstName: 'Test', lastName: 'Test' }
+        });
+    });
+  });
+
+  describe('GET /:id', () => {
+    it('should not have SQLi', async () => {
+      await runner
+        .createScan({
+          name: expect.getState().currentTestName,
+          tests: [TestType.SQLI],
+          attackParamLocations: [AttackParamLocation.PATH]
+        })
+        .threshold(Severity.MEDIUM)
+        .timeout(timeout)
+        .run({
+          method: 'GET',
+          url: `${baseUrl}/users/1`
+        });
+    });
+  });
+});
+```
+
 To clarify an attack surface and speed up the test, we suggest making clear where to discover parameters according to the source code.
 
 ```ts
+// ./src/users/users.service.ts
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
@@ -284,7 +381,7 @@ await scan.run({
 });
 ```
 
-By default, each found issue will cause the scan to stop. To control this behavior you can set a severity threshold using the \`threshold\` method. Since the SQLi is considered to be high severity issue, we can pass `Severity.HIGH` for stricter checks:
+By default, each found issue will cause the scan to stop. To control this behavior you can set a severity threshold using the \`threshold\` method. Since SQLi (SQL injection) is considered to be high severity issue, we can pass `Severity.HIGH` for stricter checks:
 
 ```ts
 scan.threshold(Severity.HIGH);
@@ -320,7 +417,7 @@ it('should not have SQLi', async () => {
 });
 ```
 
-Full documentation can be found in [runner](https://github.com/NeuraLegion/sec-tester-js/tree/master/packages/runner).
+Full documentation can be found in the [`@sectester/runner`](https://github.com/NeuraLegion/sectester-js/tree/master/packages/runner) README.
 
 ### Recommended tests
 
