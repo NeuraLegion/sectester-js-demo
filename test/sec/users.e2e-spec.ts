@@ -1,7 +1,7 @@
 import { UsersModule } from '../../src/users';
 import config from '../../src/mikro-orm.config';
-import { SecRunner } from '@sec-tester/runner';
-import { AttackParamLocation, Severity, TestType } from '@sec-tester/scan';
+import { SecRunner } from '@sectester/runner';
+import { AttackParamLocation, Severity, TestType } from '@sectester/scan';
 import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigModule } from '@nestjs/config';
