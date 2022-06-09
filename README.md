@@ -163,7 +163,7 @@ Ran all test suites matching /test\/sec/i.
 
 ### A full configuration example
 
-Now you will look under the hood to see how this all works. In the following example, we will test the RESTFul CRUD API for any intances SQL injection. [Jest](https://github.com/facebook/jest) is provided as the testing framework, that provides assert functions and test-double utilities that help with mocking, spying, etc.
+Now you will look under the hood to see how this all works. In the following example, we will test the RESTFul CRUD API for any instances of SQL injection. [Jest](https://github.com/facebook/jest) is provided as the testing framework, that provides assert functions and test-double utilities that help with mocking, spying, etc.
 
 To start the webserver within the same process with tests, not in a remote environment or container, we use Nest.js [testing utilities](https://docs.nestjs.com/fundamentals/testing#testing-utilities). You don’t have to use Nest.js, but it is what we chose for this project. The code is as follows:
 
@@ -191,7 +191,7 @@ describe('/users', () => {
 });
 ```
 
-The [`@sectester/runner`](https://github.com/NeuraLegion/sectester-js/tree/master/packages/runner) package provides a set of utilities that allows scanning the demo application for vulnerabilities. Let's rewrite the previous example using the built-in `SecRunner` class:
+The [`@sectester/runner`](https://github.com/NeuraLegion/sectester-js/tree/master/packages/runner) package provides a set of utilities that allows scanning the demo application for vulnerabilities. Let's expand the previous example using the built-in `SecRunner` class:
 
 ```ts
 let runner!: SecRunner;
@@ -208,7 +208,7 @@ beforeEach(async () => {
 afterEach(() => runner.clear());
 ```
 
-To set up a runner, create a `SecRunner` instance passing a configuration as follows:
+To set up a runner, create a `SecRunner` instance on the top of the file, passing a configuration as follows:
 
 ```ts
 import { SecRunner } from '@sectester/runner';
@@ -222,7 +222,7 @@ After that, you have to initialize a `SecRunner` instance:
 await runner.init();
 ```
 
-The runner is now ready to perform your tests. To start scanning your endpoint, first, you have to create a `SecScan` instance.
+The runner is now ready to perform your tests. To start scanning your endpoint, first, you have to create a `SecScan` instance. We do this with `runner.createScan` as shown in the example below.
 
 Now, you will write and run your first unit test!
 
@@ -231,17 +231,51 @@ Let's verify the `GET /users/:id` endpoint for SQLi:
 ```ts
 describe('GET /:id', () => {
   it('should not have SQLi', async () => {
-    const scan = runner.createScan({
-      tests: [TestType.SQLI]
-    });
+    await runner
+      .createScan({
+        name: expect.getState().currentTestName,
+        tests: [TestType.SQLI],
+        attackParamLocations: [AttackParamLocation.PATH]
+      })
+      .threshold(Severity.MEDIUM)
+      .timeout(timeout)
+      .run({
+        method: 'GET',
+        url: `${baseUrl}/users/1`
+      });
   });
 });
 ```
 
-This will raise an exception if the test fails.
+This will raise an exception when the test fails, with remediation information and a deeper explanation of SQLi, right in your command line!
+
+Let's look at another test, this time for XSS.
 
 ```ts
-// ./test/sec/users.e2e-spec.ts
+describe('POST /', () => {
+  it('should not have XSS', async () => {
+    await runner
+      .createScan({
+        name: expect.getState().currentTestName,
+        tests: [TestType.XSS],
+        attackParamLocations: [AttackParamLocation.BODY]
+      })
+      .threshold(Severity.MEDIUM)
+      .timeout(timeout)
+      .run({
+        method: 'POST',
+        url: `${baseUrl}/users`,
+        body: { firstName: 'Test', lastName: 'Test' }
+      });
+  });
+});
+```
+
+As you can see, writing a new test for XSS follows the same pattern as above. You create a scan, set a severity threshold, add a timeout, and test the endpoint using `TestType.XSS`.
+
+Here is a completed `test/sec/users.e2e-spec.ts` file with all the tests and configuration set up.
+
+```ts
 import { UsersModule } from '../../src/users';
 import config from '../../src/mikro-orm.config';
 import { SecRunner } from '@sectester/runner';
