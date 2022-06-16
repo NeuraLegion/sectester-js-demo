@@ -56,6 +56,8 @@ Trying out Bright’s SecTester is _**free**_ 💸, so let’s get started!
     2.  If you don’t use that option, make sure you save the key in a secure location. You will need to access it later on in the project but will not be able to view it again.
     3.  More info on [**how to use ENV vars in Github actions**](https://docs.github.com/en/actions/learn-github-actions/environment-variables)
 
+> ⚠️ Make sure your API key is saved in a location where you can retrieve it later! You will need it in these next steps!
+
 ### Explore the demo application
 
 Navigate to your local version of this project. Then, in your command line, install the dependencies:
@@ -72,12 +74,16 @@ After that, you can easily create a `.env` file from the template by issuing the
 $ cp .env.example .env
 ```
 
-Once it is done, just put your previously received API key into the `BRIGHT_TOKEN` variable in your .env file.
+Once this template is done, copying over (should be instantaneous), navigate to your `.env` file, and paste your Bright API key as the value of the `BRIGHT_TOKEN` variable.
+
+```text
+BRIGHT_TOKEN = <your_API_key_here>
+```
 
 Then you have to build and run services with Docker. Start Docker, and issue the command as follows:
 
 ```bash
-$ docker compose -f docker-compose.yaml up -d
+$ docker compose up -d
 ```
 
 To initialize DB schema, you should execute a migration, as shown here:
@@ -163,12 +169,13 @@ Ran all test suites matching /test\/sec/i.
 
 ### A full configuration example
 
-Now you will look under the hood to see how this all works. In the following example, we will test the RESTFul CRUD API for any instances of SQL injection. [Jest](https://github.com/facebook/jest) is provided as the testing framework, that provides assert functions and test-double utilities that help with mocking, spying, etc.
+Now you will look under the hood to see how this all works. In the following example, we will test the app we just set up for any instances of SQL injection. [Jest](https://github.com/facebook/jest) is provided as the testing framework, that provides assert functions and test-double utilities that help with mocking, spying, etc.
 
 To start the webserver within the same process with tests, not in a remote environment or container, we use Nest.js [testing utilities](https://docs.nestjs.com/fundamentals/testing#testing-utilities). You don’t have to use Nest.js, but it is what we chose for this project. The code is as follows:
 
+[`test/sec/users.e2e-spec.ts`](./test/sec/users.e2e-spec.ts)
+
 ```ts
-// ./test/sec/users.e2e-spec.ts
 import { UsersModule } from '../../src/users';
 import config from '../../src/mikro-orm.config';
 import { INestApplication } from '@nestjs/common';
@@ -233,12 +240,8 @@ describe('GET /:id', () => {
   it('should not have SQLi', async () => {
     await runner
       .createScan({
-        name: expect.getState().currentTestName,
-        tests: [TestType.SQLI],
-        attackParamLocations: [AttackParamLocation.PATH]
+        tests: [TestType.SQLI]
       })
-      .threshold(Severity.MEDIUM)
-      .timeout(timeout)
       .run({
         method: 'GET',
         url: `${baseUrl}/users/1`
@@ -249,19 +252,15 @@ describe('GET /:id', () => {
 
 This will raise an exception when the test fails, with remediation information and a deeper explanation of SQLi, right in your command line!
 
-Let's look at another test, this time for XSS.
+Let's look at another test for the `POST /users` endpoint, this time for XSS.
 
 ```ts
 describe('POST /', () => {
   it('should not have XSS', async () => {
     await runner
       .createScan({
-        name: expect.getState().currentTestName,
-        tests: [TestType.XSS],
-        attackParamLocations: [AttackParamLocation.BODY]
+        tests: [TestType.XSS]
       })
-      .threshold(Severity.MEDIUM)
-      .timeout(timeout)
       .run({
         method: 'POST',
         url: `${baseUrl}/users`,
@@ -271,7 +270,97 @@ describe('POST /', () => {
 });
 ```
 
-As you can see, writing a new test for XSS follows the same pattern as above. You create a scan, set a severity threshold, add a timeout, and test the endpoint using `TestType.XSS`.
+As you can see, writing a new test for XSS follows the same pattern as SQLi.
+
+Finally, to run a scan against the endpoint, you have to obtain a port to which the server listens. For that, we should adjust the example above just a bit:
+
+```ts
+let runner!: SecRunner;
+let app!: INestApplication;
+let baseUrl!: string;
+
+beforeAll(async () => {
+  // ...
+
+  const server = app.getHttpServer();
+
+  server.listen(0);
+
+  const port = server.address().port;
+  const protocol = app instanceof Server ? 'https' : 'http';
+  baseUrl = `${protocol}://localhost:${port}`;
+});
+```
+
+Now, you can use the `baseUrl` to set up a target:
+
+```ts
+await scan.run({
+  method: 'GET',
+  url: `${baseUrl}/users/1`
+});
+```
+
+By default, each found issue will cause the scan to stop. To control this behavior you can set a severity threshold using the `threshold` method. Since SQLi (SQL injection) is considered to be high severity issue, we can pass `Severity.HIGH` for stricter checks:
+
+```ts
+scan.threshold(Severity.HIGH);
+```
+
+To avoid long-running test, you can specify a timeout, to say how long to wait before aborting it:
+
+```ts
+scan.timeout(300000);
+```
+
+To make sure that Jest won't abort tests early, you should align a test timeout with a scan timeout as follows:
+
+```ts
+jest.setTimeout(300000);
+```
+
+To clarify an attack surface and speed up the test, we suggest making clear where to discover parameters according to the source code.
+
+[`src/users/users.service.ts`](./src/users/users.service.ts)
+
+```ts
+@Controller('users')
+export class UsersController {
+  constructor(private readonly usersService: UsersService) {}
+
+  @Get(':id')
+  public findOne(@Param('id') id: number): Promise<User | null> {
+    return this.usersService.findOne(id);
+  }
+}
+```
+
+For the example above, it should look like this:
+
+```ts
+const scan = runner.createScan({
+  tests: [TestType.SQLI],
+  attackParamLocations: [AttackParamLocation.PATH]
+});
+```
+
+Finally, the test should look like this:
+
+```ts
+it('should not have SQLi', async () => {
+  await runner
+    .createScan({
+      tests: [TestType.SQLI],
+      attackParamLocations: [AttackParamLocation.PATH]
+    })
+    .threshold(Severity.MEDIUM)
+    .timeout(300000)
+    .run({
+      method: 'GET',
+      url: `${baseUrl}/users/1`
+    });
+});
+```
 
 Here is a completed `test/sec/users.e2e-spec.ts` file with all the tests and configuration set up.
 
@@ -329,7 +418,6 @@ describe('/users', () => {
     it('should not have XSS', async () => {
       await runner
         .createScan({
-          name: expect.getState().currentTestName,
           tests: [TestType.XSS],
           attackParamLocations: [AttackParamLocation.BODY]
         })
@@ -347,7 +435,6 @@ describe('/users', () => {
     it('should not have SQLi', async () => {
       await runner
         .createScan({
-          name: expect.getState().currentTestName,
           tests: [TestType.SQLI],
           attackParamLocations: [AttackParamLocation.PATH]
         })
@@ -359,95 +446,6 @@ describe('/users', () => {
         });
     });
   });
-});
-```
-
-To clarify an attack surface and speed up the test, we suggest making clear where to discover parameters according to the source code.
-
-```ts
-// ./src/users/users.service.ts
-@Controller('users')
-export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
-
-  @Get(':id')
-  public findOne(@Param('id') id: number): Promise<User | null> {
-    return this.usersService.findOne(id);
-  }
-}
-```
-
-For the example above, it should look like this:
-
-```ts
-const scan = runner.createScan({
-  tests: [TestType.SQLI],
-  attackParamLocations: [AttackParamLocation.PATH]
-});
-```
-
-Finally, to run a scan against the endpoint, you have to obtain a port to which the server listens. For that, we should adjust a bit the example above:
-
-```ts
-let runner!: SecRunner;
-let app!: INestApplication;
-let baseUrl!: string;
-
-beforeAll(async () => {
-  // ...
-
-  const server = app.getHttpServer();
-
-  server.listen(0);
-
-  const port = server.address().port;
-  const protocol = app instanceof Server ? 'https' : 'http';
-  baseUrl = `${protocol}://localhost:${port}`;
-});
-```
-
-Now, you can use the `baseUrl` to set up a target:
-
-```ts
-await scan.run({
-  method: 'GET',
-  url: `${baseUrl}/users/1`
-});
-```
-
-By default, each found issue will cause the scan to stop. To control this behavior you can set a severity threshold using the \`threshold\` method. Since SQLi (SQL injection) is considered to be high severity issue, we can pass `Severity.HIGH` for stricter checks:
-
-```ts
-scan.threshold(Severity.HIGH);
-```
-
-To avoid long-running test, you can specify a timeout, to say how long to wait before aborting it:
-
-```ts
-scan.timeout(300000);
-```
-
-To make sure that Jest won't abort tests early, you should align a test timeout with a scan timeout as follows:
-
-```ts
-jest.setTimeout(300000);
-```
-
-Finally, the test should look like this:
-
-```ts
-it('should not have SQLi', async () => {
-  await runner
-    .createScan({
-      tests: [TestType.SQLI],
-      attackParamLocations: [AttackParamLocation.PATH]
-    })
-    .threshold(Severity.MEDIUM)
-    .timeout(300000)
-    .run({
-      method: 'GET',
-      url: `${baseUrl}/users/1`
-    });
 });
 ```
 
