@@ -31,7 +31,7 @@ export class UsersService {
    * you can fix the actual issue:
    * ```ts
    * public findOne(id: number): Promise<User | null> {
-   *   return this.orm.em.findOne({ id });
+   *   return this.orm.em.findOne(User, { id });
    * }
    * ```
    *
@@ -42,7 +42,7 @@ export class UsersService {
    *    .getConnection()
    *    .execute(`select * from "user" where "id" = ?`, [id]);
    *
-   *   return this.orm.em.map(User, user);
+   *   return user ? this.orm.em.map(User, user) : null;
    * }
    * ```
    */
@@ -51,7 +51,7 @@ export class UsersService {
       .getConnection()
       .execute(`select * from "user" where "id" = ${id}`);
 
-    return this.orm.em.map(User, user);
+    return user ? this.orm.em.map(User, user) : null;
   }
 
   public async remove(id: number): Promise<void> {
