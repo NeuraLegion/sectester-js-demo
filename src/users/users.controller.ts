@@ -8,7 +8,8 @@ import {
   Get,
   Param,
   Post,
-  Query
+  Query,
+  NotFoundException
 } from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 
@@ -35,8 +36,15 @@ export class UsersController {
 
   @Get(':id')
   @ApiResponse({ status: 200, type: User })
-  public findOne(@Param('id') id: number): Promise<User | null> {
-    return this.usersService.findOne(id);
+  @ApiResponse({ status: 404, description: 'No such user.' })
+  public async findOne(@Param('id') id: number): Promise<User> {
+    const user = await this.usersService.findOne(id);
+
+    if (!user) {
+      throw new NotFoundException('No such user.');
+    }
+
+    return user;
   }
 
   @Delete(':id')

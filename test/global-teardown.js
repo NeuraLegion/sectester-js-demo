@@ -14,7 +14,9 @@ module.exports = async () => {
     try {
       orm = await MikroORM.init(config);
 
-      await orm.em.getConnection().execute('delete from "user";');
+      await orm.em
+        .getConnection()
+        .execute('delete from "user" where "id" != 1;');
     } finally {
       await orm?.close();
     }

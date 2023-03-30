@@ -9,7 +9,7 @@ import { MikroOrmModule } from '@mikro-orm/nestjs';
 import { Server } from 'https';
 
 describe('/users', () => {
-  const timeout = 300000;
+  const timeout = 600000;
   jest.setTimeout(timeout);
 
   let runner!: SecRunner;

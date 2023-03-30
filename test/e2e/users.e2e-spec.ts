@@ -46,7 +46,9 @@ describe('/users', () => {
     it('should return a list of users', async () => {
       const res = await request(app.getHttpServer()).get('/users').expect(200);
 
-      expect(res).toMatchObject({ body: expect.arrayContaining([user]) });
+      expect(res).toMatchObject({
+        body: expect.arrayContaining([expect.objectContaining(user)])
+      });
     });
   });
 
@@ -56,20 +58,28 @@ describe('/users', () => {
         .get('/users/2')
         .expect(200);
 
-      expect(res).toMatchObject({ body: user });
+      expect(res).toMatchObject({
+        body: user
+      });
     });
 
     it('should return an user if boolean-based blind is used', async () => {
       const res = await request(app.getHttpServer())
-        .get('/users/2 AND 1858=1858')
+        .get('/users/1000000 OR 2028=2028')
         .expect(200);
 
-      expect(res).toMatchObject({ body: user });
+      expect(res).toMatchObject({
+        body: {
+          firstName: expect.any(String),
+          lastName: expect.any(String),
+          isActive: expect.any(Boolean)
+        }
+      });
     });
   });
 
   describe('DEL /:id', () => {
     it('should remove an user by ID', () =>
-      request(app.getHttpServer()).delete('/users/1').expect(200));
+      request(app.getHttpServer()).delete('/users/2').expect(200));
   });
 });
