@@ -8,9 +8,9 @@ import { MikroOrmModule } from '@mikro-orm/nestjs';
 
 describe('/users', () => {
   const user = {
-    id: 1,
-    firstName: 'FirstName #1',
-    lastName: 'LastName #1',
+    id: 2,
+    firstName: 'Karl',
+    lastName: 'Jablonski',
     isActive: true
   };
 
@@ -53,7 +53,7 @@ describe('/users', () => {
   describe('GET /:id', () => {
     it('should return an user by ID', async () => {
       const res = await request(app.getHttpServer())
-        .get('/users/1')
+        .get('/users/2')
         .expect(200);
 
       expect(res).toMatchObject({ body: user });
@@ -61,7 +61,7 @@ describe('/users', () => {
 
     it('should return an user if boolean-based blind is used', async () => {
       const res = await request(app.getHttpServer())
-        .get('/users/1 AND 1858=1858')
+        .get('/users/2 AND 1858=1858')
         .expect(200);
 
       expect(res).toMatchObject({ body: user });
