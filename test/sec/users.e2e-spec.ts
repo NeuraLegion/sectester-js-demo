@@ -35,7 +35,7 @@ describe('/users', () => {
     server.listen(0);
 
     const port = server.address().port;
-    const protocol = app instanceof Server ? 'https' : 'http';
+    const protocol = server instanceof Server ? 'https' : 'http';
     baseUrl = `${protocol}://localhost:${port}`;
   });
 
