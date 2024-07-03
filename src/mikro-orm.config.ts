@@ -1,11 +1,15 @@
 import { User } from './users';
 import { Logger } from '@nestjs/common';
-import { Options } from '@mikro-orm/core';
+import { defineConfig } from '@mikro-orm/postgresql';
+import { Migrator } from '@mikro-orm/migrations';
+import { config } from 'dotenv';
+
+config();
 
 const logger = new Logger('MikroORM');
-const config: Options = {
+
+export default defineConfig({
   port: 5432,
-  type: 'postgresql',
   dbName: 'test',
   entities: [User],
   user: process.env.POSTGRES_USER,
@@ -15,7 +19,6 @@ const config: Options = {
     snapshot: false,
     pathTs: 'src/migrations',
     path: 'dist/migrations'
-  }
-};
-
-export default config;
+  },
+  extensions: [Migrator]
+});
