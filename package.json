@@ -60,10 +60,10 @@
   },
   "homepage": "https://github.com/NeuraLegion/sectester-js-demo#readme",
   "dependencies": {
-    "@mikro-orm/core": "^5.6.6",
-    "@mikro-orm/migrations": "^5.6.6",
+    "@mikro-orm/core": "^6.2.9",
+    "@mikro-orm/migrations": "^5.9.8",
     "@mikro-orm/nestjs": "^5.1.8",
-    "@mikro-orm/postgresql": "^5.6.6",
+    "@mikro-orm/postgresql": "^5.9.8",
     "@nestjs/common": "^9.4.0",
     "@nestjs/config": "^2.3.1",
     "@nestjs/core": "^9.4.0",
@@ -77,7 +77,7 @@
   "devDependencies": {
     "@commitlint/cli": "^17.0.1",
     "@commitlint/config-conventional": "^17.0.0",
-    "@mikro-orm/cli": "^5.6.6",
+    "@mikro-orm/cli": "^6.2.9",
     "@nestjs/cli": "^9.3.0",
     "@nestjs/schematics": "^9.1.0",
     "@nestjs/testing": "^9.4.0",
