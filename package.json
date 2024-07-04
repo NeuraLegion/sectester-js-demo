@@ -74,8 +74,8 @@
     "tslib": "~2.6.2"
   },
   "devDependencies": {
-    "@commitlint/cli": "^17.0.1",
-    "@commitlint/config-conventional": "^17.0.0",
+    "@commitlint/cli": "^19.3.0",
+    "@commitlint/config-conventional": "^19.2.2",
     "@mikro-orm/cli": "^6.2.9",
     "@nestjs/cli": "^10.4.1",
     "@nestjs/schematics": "^10.1.2",
