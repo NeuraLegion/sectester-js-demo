@@ -2,10 +2,14 @@
 module.exports = {
   preset: '../jest.config.js',
   testRegex: '.*spec.ts$',
-  globals: {
-    'ts-jest': {
-      tsconfig: '<rootDir>/../tsconfig.json'
-    }
+  transform: {
+    '^.+\\.[tj]sx?$': [
+      'ts-jest',
+      {
+        tsconfig: '<rootDir>/../tsconfig.json',
+        isolatedModules: true
+      }
+    ]
   },
   globalSetup: '<rootDir>/global-setup.js',
   globalTeardown: '<rootDir>/global-teardown.js'
