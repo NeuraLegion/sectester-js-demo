@@ -70,7 +70,7 @@
     "@nestjs/platform-express": "^10.3.10",
     "@nestjs/swagger": "^7.4.0",
     "dotenv": "^16.4.5",
-    "swagger-ui-express": "^4.6.2",
+    "swagger-ui-express": "^5.0.1",
     "tslib": "~2.6.2"
   },
   "devDependencies": {
