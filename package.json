@@ -95,7 +95,7 @@
     "@typescript-eslint/eslint-plugin": "^5.26.0",
     "@typescript-eslint/parser": "^5.26.0",
     "detect-port": "^1.6.1",
-    "docker-compose": "^0.23.17",
+    "docker-compose": "^0.24.8",
     "eslint": "^8.16.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-import-resolver-typescript": "^2.7.1",
