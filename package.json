@@ -57,7 +57,7 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config test/jest-e2e.config.js test/e2e",
     "test:sec": "jest --config test/jest-e2e.config.js test/sec",
-    "test:sec2": "jest --config test/jest-e2e.config.js test/sec2"
+    "test:misc": "jest --config test/jest-e2e.config.js test/misc"
   },
   "homepage": "https://github.com/NeuraLegion/sectester-js-demo#readme",
   "dependencies": {
