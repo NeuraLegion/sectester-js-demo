@@ -79,6 +79,7 @@ describe('/users', () => {
   });
 
   describe('DEL /:id', () => {
+    // eslint-disable-next-line jest/expect-expect
     it('should remove an user by ID', () =>
       request(app.getHttpServer()).delete('/users/2').expect(200));
   });
