@@ -91,7 +91,7 @@ describe('UserService', () => {
 
       const result = await service.findOne(input);
 
-      expect(orm.em.getConnection().execute).toBeCalledWith(
+      expect(orm.em.getConnection().execute).toHaveBeenCalledWith(
         `select * from "user" where "id" = ${input}`
       );
       expect(result).toEqual(oneUser);
@@ -102,7 +102,7 @@ describe('UserService', () => {
     it('should call remove with the passed value', async () => {
       await service.remove(2);
 
-      expect(orm.em.removeAndFlush).toBeCalledWith({ id: 2 });
+      expect(orm.em.removeAndFlush).toHaveBeenCalledWith({ id: 2 });
     });
   });
 });
