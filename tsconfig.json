@@ -1,12 +1,8 @@
 {
-  "compileOnSave": false,
   "compilerOptions": {
-    "rootDir": "src",
-    "baseUrl": "src",
-    "outDir": "dist",
+    "outDir": "./dist",
     "newLine": "LF",
     "sourceMap": true,
-    "declaration": false,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "downlevelIteration": true,
@@ -29,5 +25,5 @@
     "skipDefaultLibCheck": true,
     "typeRoots": ["node_modules/@types", "typings"]
   },
-  "exclude": ["node_modules", "tmp"]
+  "exclude": ["node_modules", "tmp", "dist"]
 }
