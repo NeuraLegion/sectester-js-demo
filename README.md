@@ -48,8 +48,8 @@ Trying out Bright’s SecTester is _**free**_ 💸, so let’s get started!
 
 ### Get a Bright API key
 
-1.  Register for a free account at Bright’s [**signup**](https://app.neuralegion.com/signup) page
-2.  Optional: Skip the quickstart wizard and go directly to [**User API key creation**](https://app.neuralegion.com/profile)
+1.  Register for a free account at Bright’s [**signup**](https://app.brightsec.com/signup) page
+2.  Optional: Skip the quickstart wizard and go directly to [**User API key creation**](https://app.brightsec.com/profile)
 3.  Create a Bright API key ([**check out our doc on how to create a user key**](https://docs.brightsec.com/docs/manage-your-personal-account#manage-your-personal-api-keys-authentication-tokens))
 4.  Save the Bright API key
     1.  We recommend using your Github repository secrets feature to store the key, accessible via the `Settings > Security > Secrets > Actions` configuration. We use the ENV variable called `BRIGHT_TOKEN` in our examples
@@ -134,7 +134,7 @@ This can take a few minutes, and then you should see the result, like in the fol
 
     IssueFound: Target is vulnerable
 
-    Issue in Bright UI:   https://app.neuralegion.com/scans/mKScKCEJRq2nvVkzEHUArB/issues/4rXuWAQTekbJfa9Rc7vHAX
+    Issue in Bright UI:   https://app.brightsec.com/scans/mKScKCEJRq2nvVkzEHUArB/issues/4rXuWAQTekbJfa9Rc7vHAX
     Name:                 SQL Injection: Blind Boolean Based
     Severity:             High
     Remediation:
@@ -152,8 +152,7 @@ This can take a few minutes, and then you should see the result, like in the fol
     References:
     ● https://cwe.mitre.org/data/definitions/89.html
     ● https://www.owasp.org/index.php/Blind_SQL_Injection
-    ● https://www.neuralegion.com/blog/blind-sql-injection/
-    ● https://kb.neuralegion.com/#/guide/vulnerabilities/32-sql-injection.md
+    ● https://brightsec.com/blog/blind-sql-injection/
 
       at SecScan.assert (../packages/runner/src/lib/SecScan.ts:59:13)
           at runMicrotasks (<anonymous>)
@@ -207,7 +206,7 @@ let app!: INestApplication;
 // ...
 
 beforeEach(async () => {
-  runner = new SecRunner({ hostname: 'app.neuralegion.com' });
+  runner = new SecRunner({ hostname: 'app.brightsec.com' });
 
   await runner.init();
 });
@@ -220,7 +219,7 @@ To set up a runner, create a `SecRunner` instance on the top of the file, passin
 ```ts
 import { SecRunner } from '@sectester/runner';
 
-const runner = new SecRunner({ hostname: 'app.neuralegion.com' });
+const runner = new SecRunner({ hostname: 'app.brightsec.com' });
 ```
 
 After that, you have to initialize a `SecRunner` instance:
@@ -509,7 +508,7 @@ steps:
       POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
       POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
       BRIGHT_TOKEN: ${{ secrets.BRIGHT_TOKEN }}
-      BRIGHT_HOSTNAME: app.neuralegion.com
+      BRIGHT_HOSTNAME: app.brightsec.com
 ```
 
 For a full list of CI configuration examples, check out the docs below.
