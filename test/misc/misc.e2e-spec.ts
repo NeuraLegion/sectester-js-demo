@@ -87,4 +87,27 @@ describe('MiscService', () => {
       .timeout(timeout)
       .runPayloadScan(payloadSample, fn);
   });
+
+  it('calculateWeekdays() should not have DATE_MANIPULATION', async () => {
+    const payloadSample = JSON.stringify({
+      from: '2020-01-01',
+      to: '2024-01-01'
+    });
+    const fn = async (data: string): Promise<string> => {
+      const parsed = JSON.parse(data) as { from: string; to: string };
+      const count = await miscService.calculateWeekdays(parsed.from, parsed.to);
+
+      return count.toString();
+    };
+
+    await runner
+      .createScan({
+        name: expect.getState().currentTestName,
+        tests: [TestType.DATE_MANIPULATION],
+        attackParamLocations: [AttackParamLocation.BODY]
+      })
+      .threshold(Severity.LOW)
+      .timeout(timeout)
+      .runPayloadScan(payloadSample, fn);
+  });
 });

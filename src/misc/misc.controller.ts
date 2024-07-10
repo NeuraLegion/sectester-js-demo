@@ -1,6 +1,14 @@
 import { MiscService } from './misc.service';
 import type { Request } from 'express';
-import { Body, Controller, Post, RawBodyRequest, Req } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Query,
+  RawBodyRequest,
+  Req
+} from '@nestjs/common';
 
 @Controller('misc')
 export class MiscController {
@@ -23,5 +31,20 @@ export class MiscController {
     const parsed = await this.miscService.parse(req.body.toString());
 
     return JSON.stringify(parsed, null, 2);
+  }
+
+  @Get('/weekdays')
+  public async weekdays(
+    @Query('from') from: string,
+    @Query('to') to: string,
+    @Query('weekday') weekday?: number
+  ): Promise<string> {
+    const count = await this.miscService.calculateWeekdays(
+      from,
+      to,
+      weekday ?? 1
+    );
+
+    return JSON.stringify({ count }, null, 2);
   }
 }
