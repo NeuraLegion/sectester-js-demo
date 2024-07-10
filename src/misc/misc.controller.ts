@@ -1,4 +1,5 @@
 import { MiscService } from './misc.service';
+import { JwtPayloadService } from './services';
 import type { Request } from 'express';
 import {
   Body,
@@ -7,12 +8,16 @@ import {
   Post,
   Query,
   RawBodyRequest,
-  Req
+  Req,
+  UnauthorizedException
 } from '@nestjs/common';
 
 @Controller('misc')
 export class MiscController {
-  constructor(private readonly miscService: MiscService) {}
+  constructor(
+    private readonly jwtPayloadService: JwtPayloadService,
+    private readonly miscService: MiscService
+  ) {}
 
   @Post('/render')
   public render(
@@ -46,5 +51,35 @@ export class MiscController {
     );
 
     return JSON.stringify({ count }, null, 2);
+  }
+
+  @Get('/jwt/decode')
+  public decodeJwt(@Query('token') token: string) {
+    if (!token) {
+      throw new UnauthorizedException('Missing JWT token');
+    }
+
+    return this.jwtPayloadService.decode(token);
+  }
+
+  @Get('/jwt/verify')
+  public verifyJwt(@Query('token') token: string) {
+    if (!token) {
+      throw new UnauthorizedException('Missing JWT token');
+    }
+
+    return { valid: this.jwtPayloadService.verify(token) };
+  }
+
+  @Post('/jwt/update')
+  public updateJwt(
+    @Query('token') token: string,
+    @Body() body: Record<string, any>
+  ) {
+    if (!token) {
+      throw new UnauthorizedException('Missing JWT token');
+    }
+
+    return { token: this.jwtPayloadService.update(token, body) };
   }
 }
