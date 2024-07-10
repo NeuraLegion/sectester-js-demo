@@ -1,4 +1,5 @@
 import { MiscService } from '../../src/misc/misc.service';
+import { XmlService } from '../../src/misc/xml.service';
 import { SecRunner } from '@sectester/runner';
 import { AttackParamLocation, Severity, TestType } from '@sectester/scan';
 import { Test, TestingModule } from '@nestjs/testing';
@@ -12,7 +13,7 @@ describe('MiscService', () => {
 
   beforeAll(async () => {
     const moduleRef: TestingModule = await Test.createTestingModule({
-      providers: [MiscService]
+      providers: [MiscService, XmlService]
     }).compile();
 
     miscService = moduleRef.get<MiscService>(MiscService);
@@ -65,6 +66,21 @@ describe('MiscService', () => {
       .createScan({
         name: expect.getState().currentTestName,
         tests: [TestType.RFI],
+        attackParamLocations: [AttackParamLocation.BODY]
+      })
+      .threshold(Severity.LOW)
+      .timeout(timeout)
+      .runPayloadScan(payloadSample, fn);
+  });
+
+  it('parse() should not have XXE', async () => {
+    const payloadSample = '<root />';
+    const fn = (data: string): Promise<string> => miscService.parse(data);
+
+    await runner
+      .createScan({
+        name: expect.getState().currentTestName,
+        tests: [TestType.XXE],
         attackParamLocations: [AttackParamLocation.BODY]
       })
       .threshold(Severity.LOW)

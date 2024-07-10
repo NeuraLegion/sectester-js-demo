@@ -1,5 +1,6 @@
 import { MiscService } from './misc.service';
-import { Body, Controller, Post } from '@nestjs/common';
+import type { Request } from 'express';
+import { Body, Controller, Post, RawBodyRequest, Req } from '@nestjs/common';
 
 @Controller('misc')
 export class MiscController {
@@ -15,5 +16,12 @@ export class MiscController {
   @Post('/fetch')
   public fetch(@Body() body: { url: string }): Promise<string> {
     return this.miscService.fetch(body.url);
+  }
+
+  @Post('/xml')
+  public async parse(@Req() req: RawBodyRequest<Request>): Promise<string> {
+    const parsed = await this.miscService.parse(req.body.toString());
+
+    return JSON.stringify(parsed, null, 2);
   }
 }

@@ -72,8 +72,10 @@
     "@nestjs/swagger": "^7.4.0",
     "dotenv": "^16.4.5",
     "ejs": "^3.1.10",
+    "express": "^4.19.2",
     "swagger-ui-express": "^5.0.1",
-    "tslib": "~2.6.3"
+    "tslib": "~2.6.3",
+    "xml2js": "^0.6.2"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.3.0",
@@ -94,6 +96,7 @@
     "@types/jest": "^29.5.12",
     "@types/node": "^18.19.39",
     "@types/supertest": "^6.0.2",
+    "@types/xml2js": "^0.4.14",
     "@typescript-eslint/eslint-plugin": "^7.16.0",
     "@typescript-eslint/parser": "^7.16.0",
     "detect-port": "^1.6.1",
