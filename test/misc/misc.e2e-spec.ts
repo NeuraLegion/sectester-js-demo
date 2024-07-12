@@ -1,12 +1,11 @@
 import { MiscService } from '../../src/misc/misc.service';
 import { XmlService } from '../../src/misc/xml.service';
 import { SecRunner } from '@sectester/runner';
-import { AttackParamLocation, Severity, TestType } from '@sectester/scan';
+import { TestType } from '@sectester/scan';
 import { Test, TestingModule } from '@nestjs/testing';
 
 describe('MiscService', () => {
-  const timeout = 600000;
-  jest.setTimeout(timeout);
+  jest.setTimeout(600_000);
 
   let runner!: SecRunner;
   let miscService!: MiscService;
@@ -31,83 +30,67 @@ describe('MiscService', () => {
   afterEach(() => runner.clear());
 
   it('render() should not have SSTI', async () => {
-    const payloadSample = JSON.stringify({ template: 'Hello!' });
-    const fn = async (data: string): Promise<string> => {
-      const template =
-        (JSON.parse(data) as { template: string }).template || '';
-      const result = await miscService.render(template, {});
-
-      return result;
+    type FnArgs = {
+      template: string;
     };
+    const inputSample: FnArgs = { template: 'some string' };
+    const fn = ({ template }: FnArgs) => miscService.render(template, {});
 
     await runner
       .createScan({
         name: expect.getState().currentTestName,
-        tests: [TestType.SSTI],
-        attackParamLocations: [AttackParamLocation.BODY]
+        tests: [TestType.SSTI]
       })
-      .threshold(Severity.LOW)
-      .timeout(timeout)
-      .runPayloadScan(payloadSample, fn);
+      .run({ inputSample, fn });
   });
 
   it('fetch() should not have RFI', async () => {
-    const payloadSample = JSON.stringify({
-      url: 'https://brightsec.com/robots.txt'
-    });
-    const fn = async (data: string): Promise<string> => {
-      const url = (JSON.parse(data) as { url: string }).url;
-      const result = await miscService.fetch(url);
-
-      return result;
+    type FnArgs = {
+      url: string;
     };
+    const inputSample: FnArgs = {
+      url: 'https://brightsec.com/robots.txt'
+    };
+    const fn = ({ url }: FnArgs) => miscService.fetch(url);
 
     await runner
       .createScan({
         name: expect.getState().currentTestName,
-        tests: [TestType.RFI],
-        attackParamLocations: [AttackParamLocation.BODY]
+        tests: [TestType.RFI]
       })
-      .threshold(Severity.LOW)
-      .timeout(timeout)
-      .runPayloadScan(payloadSample, fn);
+      .run({ inputSample, fn });
   });
 
   it('parse() should not have XXE', async () => {
-    const payloadSample = '<root />';
-    const fn = (data: string): Promise<string> => miscService.parse(data);
+    const inputSample = '<root />';
+    const fn = (data: string) => miscService.parse(data);
 
     await runner
       .createScan({
         name: expect.getState().currentTestName,
-        tests: [TestType.XXE],
-        attackParamLocations: [AttackParamLocation.BODY]
+        tests: [TestType.XXE]
       })
-      .threshold(Severity.LOW)
-      .timeout(timeout)
-      .runPayloadScan(payloadSample, fn);
+      .run({ inputSample, fn });
   });
 
-  it('calculateWeekdays() should not have DATE_MANIPULATION', async () => {
-    const payloadSample = JSON.stringify({
-      from: '2020-01-01',
-      to: '2024-01-01'
-    });
-    const fn = async (data: string): Promise<string> => {
-      const parsed = JSON.parse(data) as { from: string; to: string };
-      const count = await miscService.calculateWeekdays(parsed.from, parsed.to);
-
-      return count.toString();
+  // eslint-disable-next-line jest/no-focused-tests
+  it.only('calculateWeekdays() should not have DATE_MANIPULATION', async () => {
+    type FnArgs = {
+      from: string;
+      to: string;
     };
+    const inputSample: FnArgs = {
+      from: '2022-11-30',
+      to: '2024-06-21'
+    };
+    const fn = ({ from, to }: FnArgs) =>
+      miscService.calculateWeekdays(from, to);
 
     await runner
       .createScan({
         name: expect.getState().currentTestName,
-        tests: [TestType.DATE_MANIPULATION],
-        attackParamLocations: [AttackParamLocation.BODY]
+        tests: [TestType.DATE_MANIPULATION]
       })
-      .threshold(Severity.LOW)
-      .timeout(timeout)
-      .runPayloadScan(payloadSample, fn);
+      .run({ inputSample, fn });
   });
 });

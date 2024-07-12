@@ -1,17 +1,11 @@
 import { JwtPayloadService } from '../../src/misc/services';
 import { SecRunner } from '@sectester/runner';
-import { AttackParamLocation, TestType } from '@sectester/scan';
+import { TestType } from '@sectester/scan';
 import { Test, TestingModule } from '@nestjs/testing';
 import { JwtModule } from '@nestjs/jwt';
 
-interface JwtFnPayload {
-  readonly jwt: string;
-  readonly payload: Record<string, any>;
-}
-
 describe('JwtPayloadService', () => {
-  const timeout = 600000;
-  jest.setTimeout(timeout);
+  jest.setTimeout(600_000);
 
   let runner!: SecRunner;
   let jwtPayloadService!: JwtPayloadService;
@@ -44,70 +38,64 @@ describe('JwtPayloadService', () => {
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiSm9uIiwiaWF0IjoxNzIwNjAxMjEwLCJleHAiOjE3MjA2MDE4MTB9.L5aDVSPIPgDnCoHezIUlgKen3eSSLn22rpoAWjGCQrA';
 
   it('update() should not have JWT issues', async () => {
-    const payloadSample = JSON.stringify({
+    type FnArgs = {
+      jwt: string;
+      payload: Record<string, any>;
+    };
+    const inputSample: FnArgs = {
       jwt: SAMPLE_JWT_TOKEN,
       payload: {
         name: 'John'
       }
-    } as JwtFnPayload);
-    const fn = (data: string): Promise<any> => {
-      const parsed = JSON.parse(data) as JwtFnPayload;
-
-      return Promise.resolve({
-        jwt: jwtPayloadService.update(parsed.jwt, parsed.payload)
-      });
     };
+    const fn = ({ jwt, payload }: FnArgs) =>
+      Promise.resolve({
+        jwt: jwtPayloadService.update(jwt, payload)
+      });
 
     await runner
       .createScan({
         name: expect.getState().currentTestName,
-        tests: [TestType.JWT],
-        attackParamLocations: [AttackParamLocation.BODY]
+        tests: [TestType.JWT]
       })
-      .timeout(timeout)
-      .runPayloadScan(payloadSample, fn);
+      .run({ inputSample, fn });
   });
 
-  // eslint-disable-next-line jest/no-focused-tests
-  it.only('verify() should not have JWT issues', async () => {
-    const payloadSample = JSON.stringify({
-      token: SAMPLE_JWT_TOKEN
-    });
-    const fn = (data: string): Promise<any> => {
-      const parsed = JSON.parse(data) as { token: string };
-
-      return Promise.resolve({
-        valid: jwtPayloadService.verify(parsed.token)
-      });
+  it('verify() should not have JWT issues', async () => {
+    type FnArgs = {
+      token: string;
     };
+    const inputSample: FnArgs = {
+      token: SAMPLE_JWT_TOKEN
+    };
+    const fn = ({ token }: FnArgs) =>
+      Promise.resolve({
+        valid: jwtPayloadService.verify(token)
+      });
 
     await runner
       .createScan({
         name: expect.getState().currentTestName,
-        tests: [TestType.JWT],
-        attackParamLocations: [AttackParamLocation.BODY]
+        tests: [TestType.JWT]
       })
-      .timeout(timeout)
-      .runPayloadScan(payloadSample, fn);
+      .run({ inputSample, fn });
   });
 
   it('decode() should not have JWT issues', async () => {
-    const payloadSample = JSON.stringify({
-      jwtToken: SAMPLE_JWT_TOKEN
-    });
-    const fn = (data: string): Promise<any> => {
-      const parsed = JSON.parse(data) as { jwtToken: string };
-
-      return Promise.resolve(jwtPayloadService.decode(parsed.jwtToken));
+    type FnArgs = {
+      jwtToken: string;
     };
+    const inputSample: FnArgs = {
+      jwtToken: SAMPLE_JWT_TOKEN
+    };
+    const fn = ({ jwtToken }: FnArgs) =>
+      Promise.resolve(jwtPayloadService.decode(jwtToken));
 
     await runner
       .createScan({
         name: expect.getState().currentTestName,
-        tests: [TestType.JWT],
-        attackParamLocations: [AttackParamLocation.BODY]
+        tests: [TestType.JWT]
       })
-      .timeout(timeout)
-      .runPayloadScan(payloadSample, fn);
+      .run({ inputSample, fn });
   });
 });
