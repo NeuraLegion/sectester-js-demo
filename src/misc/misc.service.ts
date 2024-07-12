@@ -1,11 +1,8 @@
-import { XmlService } from './xml.service';
 import { Injectable } from '@nestjs/common';
 import { render } from 'ejs';
 
 @Injectable()
 export class MiscService {
-  constructor(private readonly xmlService: XmlService) {}
-
   public render(
     template: string,
     params: Record<string, any>
@@ -20,10 +17,6 @@ export class MiscService {
     }
 
     return response.text();
-  }
-
-  public parse(xml: string): Promise<any> {
-    return this.xmlService.parse(xml);
   }
 
   public async calculateWeekdays(

@@ -1,4 +1,5 @@
 import { MiscService } from './misc.service';
+import { XmlService } from './services';
 import type { Request } from 'express';
 import {
   Body,
@@ -12,7 +13,10 @@ import {
 
 @Controller('misc')
 export class MiscController {
-  constructor(private readonly miscService: MiscService) {}
+  constructor(
+    private readonly miscService: MiscService,
+    private readonly xmlService: XmlService
+  ) {}
 
   @Post('/render')
   public render(
@@ -28,7 +32,7 @@ export class MiscController {
 
   @Post('/xml')
   public async parse(@Req() req: RawBodyRequest<Request>): Promise<string> {
-    const parsed = await this.miscService.parse(req.body.toString());
+    const parsed = await this.xmlService.parse(req.body.toString());
 
     return JSON.stringify(parsed, null, 2);
   }

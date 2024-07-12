@@ -1,6 +1,6 @@
 import { MiscService } from './misc.service';
 import { MiscController } from './misc.controller';
-import { XmlService } from './xml.service';
+import { XmlService } from './services';
 import { Module } from '@nestjs/common';
 
 @Module({

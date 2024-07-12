@@ -1,5 +1,4 @@
 import { MiscService } from '../../src/misc/misc.service';
-import { XmlService } from '../../src/misc/xml.service';
 import { SecRunner } from '@sectester/runner';
 import { TestType } from '@sectester/scan';
 import { Test, TestingModule } from '@nestjs/testing';
@@ -12,7 +11,7 @@ describe('MiscService', () => {
 
   beforeAll(async () => {
     const moduleRef: TestingModule = await Test.createTestingModule({
-      providers: [MiscService, XmlService]
+      providers: [MiscService]
     }).compile();
 
     miscService = moduleRef.get<MiscService>(MiscService);
@@ -57,18 +56,6 @@ describe('MiscService', () => {
       .createScan({
         name: expect.getState().currentTestName,
         tests: [TestType.RFI]
-      })
-      .run({ inputSample, fn });
-  });
-
-  it('parse() should not have XXE', async () => {
-    const inputSample = '<root />';
-    const fn = (data: string) => miscService.parse(data);
-
-    await runner
-      .createScan({
-        name: expect.getState().currentTestName,
-        tests: [TestType.XXE]
       })
       .run({ inputSample, fn });
   });
