@@ -19,13 +19,6 @@ export class MiscController {
     private readonly xmlService: XmlService
   ) {}
 
-  @Post('/render')
-  public render(
-    @Body() body: { template: string; params?: Record<string, any> }
-  ): Promise<string> {
-    return this.miscService.render(body.template, body.params ?? {});
-  }
-
   @Post('/fetch')
   public fetch(@Body() body: { url: string }): Promise<string> {
     return this.miscService.fetch(body.url);

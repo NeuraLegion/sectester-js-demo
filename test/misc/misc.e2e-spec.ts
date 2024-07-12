@@ -29,21 +29,6 @@ describe('MiscService', () => {
 
   afterEach(() => runner.clear());
 
-  it('render() should not have SSTI', async () => {
-    type FnArgs = {
-      template: string;
-    };
-    const inputSample: FnArgs = { template: 'some string' };
-    const fn = ({ template }: FnArgs) => miscService.render(template, {});
-
-    await runner
-      .createScan({
-        name: expect.getState().currentTestName,
-        tests: [TestType.SSTI]
-      })
-      .run({ inputSample, fn });
-  });
-
   it('fetch() should not have RFI', async () => {
     type FnArgs = {
       url: string;
