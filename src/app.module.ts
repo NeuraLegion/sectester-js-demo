@@ -7,11 +7,9 @@ import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({
-      isGlobal: true
-    }),
     UsersModule,
     MiscModule,
+    ConfigModule.forRoot(),
     MikroOrmModule.forRootAsync({
       useClass: MikroOrmConfigFactory
     })
