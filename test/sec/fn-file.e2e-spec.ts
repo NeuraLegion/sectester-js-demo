@@ -1,21 +1,21 @@
 import { MiscModule } from '../../src/misc/misc.module';
-import { MiscService } from '../../src/misc/misc.service';
+import { FileService } from '../../src/misc/services';
 import { SecRunner } from '@sectester/runner';
 import { TestType } from '@sectester/scan';
 import { Test, TestingModule } from '@nestjs/testing';
 
-describe('MiscService', () => {
+describe('FileService', () => {
   jest.setTimeout(600_000);
 
   let runner!: SecRunner;
-  let miscService!: MiscService;
+  let fileService!: FileService;
 
   beforeAll(async () => {
     const moduleRef: TestingModule = await Test.createTestingModule({
       imports: [MiscModule]
     }).compile();
 
-    miscService = moduleRef.get<MiscService>(MiscService);
+    fileService = moduleRef.get<FileService>(FileService);
   });
 
   beforeEach(async () => {
@@ -36,7 +36,7 @@ describe('MiscService', () => {
     const inputSample: FnArgs = {
       url: 'https://brightsec.com/robots.txt'
     };
-    const fn = ({ url }: FnArgs) => miscService.fetch(url);
+    const fn = ({ url }: FnArgs) => fileService.fetch(url);
 
     await runner
       .createScan({

@@ -1,5 +1,4 @@
-import { MiscService } from './misc.service';
-import { DateService, XmlService } from './services';
+import { DateService, FileService, XmlService } from './services';
 import type { Request } from 'express';
 import {
   Body,
@@ -15,13 +14,13 @@ import {
 export class MiscController {
   constructor(
     private readonly dateService: DateService,
-    private readonly miscService: MiscService,
+    private readonly fileService: FileService,
     private readonly xmlService: XmlService
   ) {}
 
   @Post('/fetch')
   public fetch(@Body() body: { url: string }): Promise<string> {
-    return this.miscService.fetch(body.url);
+    return this.fileService.fetch(body.url);
   }
 
   @Post('/xml')

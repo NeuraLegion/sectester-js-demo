@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
-export class MiscService {
+export class FileService {
   public async fetch(url: string): Promise<string> {
     const response = await fetch(url);
     if (!response.ok) {
