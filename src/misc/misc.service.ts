@@ -18,28 +18,4 @@ export class MiscService {
 
     return response.text();
   }
-
-  public async calculateWeekdays(
-    from: string,
-    to: string,
-    weekDay = 1
-  ): Promise<number> {
-    const startDate = new Date(from);
-    const endDate = new Date(to);
-
-    let mondaysCounter = 0;
-    const currentDate = startDate;
-    while (currentDate <= endDate) {
-      if (currentDate.getDay() === weekDay) {
-        mondaysCounter++;
-      }
-
-      if (mondaysCounter % 100 === 0) {
-        await new Promise(resolve => setTimeout(resolve, 0));
-      }
-      currentDate.setDate(currentDate.getDate() + 1);
-    }
-
-    return mondaysCounter;
-  }
 }

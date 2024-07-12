@@ -1,5 +1,5 @@
 import { MiscService } from './misc.service';
-import { XmlService } from './services';
+import { DateService, XmlService } from './services';
 import type { Request } from 'express';
 import {
   Body,
@@ -14,6 +14,7 @@ import {
 @Controller('misc')
 export class MiscController {
   constructor(
+    private readonly dateService: DateService,
     private readonly miscService: MiscService,
     private readonly xmlService: XmlService
   ) {}
@@ -31,10 +32,8 @@ export class MiscController {
   }
 
   @Post('/xml')
-  public async parse(@Req() req: RawBodyRequest<Request>): Promise<string> {
-    const parsed = await this.xmlService.parse(req.body.toString());
-
-    return JSON.stringify(parsed, null, 2);
+  public parse(@Req() req: RawBodyRequest<Request>): Promise<string> {
+    return this.xmlService.parse(req.body.toString());
   }
 
   @Get('/weekdays')
@@ -43,7 +42,7 @@ export class MiscController {
     @Query('to') to: string,
     @Query('weekday') weekday?: number
   ): Promise<string> {
-    const count = await this.miscService.calculateWeekdays(
+    const count = await this.dateService.calculateWeekdays(
       from,
       to,
       weekday ?? 1

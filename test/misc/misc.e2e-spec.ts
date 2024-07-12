@@ -1,3 +1,4 @@
+import { MiscModule } from '../../src/misc/misc.module';
 import { MiscService } from '../../src/misc/misc.service';
 import { SecRunner } from '@sectester/runner';
 import { TestType } from '@sectester/scan';
@@ -11,7 +12,7 @@ describe('MiscService', () => {
 
   beforeAll(async () => {
     const moduleRef: TestingModule = await Test.createTestingModule({
-      providers: [MiscService]
+      imports: [MiscModule]
     }).compile();
 
     miscService = moduleRef.get<MiscService>(MiscService);
@@ -56,27 +57,6 @@ describe('MiscService', () => {
       .createScan({
         name: expect.getState().currentTestName,
         tests: [TestType.RFI]
-      })
-      .run({ inputSample, fn });
-  });
-
-  // eslint-disable-next-line jest/no-focused-tests
-  it.only('calculateWeekdays() should not have DATE_MANIPULATION', async () => {
-    type FnArgs = {
-      from: string;
-      to: string;
-    };
-    const inputSample: FnArgs = {
-      from: '2022-11-30',
-      to: '2024-06-21'
-    };
-    const fn = ({ from, to }: FnArgs) =>
-      miscService.calculateWeekdays(from, to);
-
-    await runner
-      .createScan({
-        name: expect.getState().currentTestName,
-        tests: [TestType.DATE_MANIPULATION]
       })
       .run({ inputSample, fn });
   });
