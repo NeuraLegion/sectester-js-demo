@@ -2,7 +2,7 @@ import { MiscController } from './misc.controller';
 import { DateService, FileService, XmlService } from './services';
 import { Test, TestingModule } from '@nestjs/testing';
 import { RawBodyRequest } from '@nestjs/common';
-import { Request } from 'express';
+import { IncomingMessage } from 'http';
 
 describe('MiscController', () => {
   let miscController: MiscController;
@@ -62,8 +62,8 @@ describe('MiscController', () => {
       const expectedResult = 'parsed content';
       xmlService.parse.mockResolvedValue(expectedResult);
       const mockRequest = {
-        body: Buffer.from(xmlBody)
-      } as RawBodyRequest<Request>;
+        rawBody: Buffer.from(xmlBody)
+      } as RawBodyRequest<IncomingMessage>;
 
       const result = await miscController.parse(mockRequest);
 

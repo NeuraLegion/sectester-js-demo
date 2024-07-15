@@ -1,7 +1,7 @@
 /* eslint-disable max-classes-per-file */
 import { DateService, FileService, XmlService } from './services';
-import type { Request } from 'express';
 import {
+  BadRequestException,
   Body,
   Controller,
   Get,
@@ -17,6 +17,7 @@ import {
   ApiQuery,
   ApiProperty
 } from '@nestjs/swagger';
+import { IncomingMessage } from 'http';
 
 class FetchDto {
   @ApiProperty({ description: 'URL to fetch content from' })
@@ -55,8 +56,12 @@ export class MiscController {
     type: Object
   })
   @ApiBody({ type: String, description: 'Raw XML string' })
-  public parse(@Req() req: RawBodyRequest<Request>): Promise<string> {
-    return this.xmlService.parse(req.body.toString());
+  public parse(@Req() req: RawBodyRequest<IncomingMessage>): Promise<string> {
+    if (!req.rawBody) {
+      throw new BadRequestException('Request body is required');
+    }
+
+    return this.xmlService.parse(req.rawBody.toString());
   }
 
   @Get('/weekdays')

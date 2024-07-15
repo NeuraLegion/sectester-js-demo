@@ -70,7 +70,6 @@
     "@nestjs/platform-express": "^10.3.10",
     "@nestjs/swagger": "^7.4.0",
     "dotenv": "^16.4.5",
-    "express": "^4.19.2",
     "swagger-ui-express": "^5.0.1",
     "tslib": "~2.6.3",
     "xml2js": "^0.6.2"
@@ -89,7 +88,6 @@
     "@sectester/scan": "^0.33.1",
     "@semantic-release/exec": "^6.0.3",
     "@semantic-release/git": "^10.0.1",
-    "@types/express": "^4.17.21",
     "@types/jest": "^29.5.12",
     "@types/node": "^18.19.39",
     "@types/supertest": "^6.0.2",
