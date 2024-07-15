@@ -2,11 +2,19 @@ import { AppModule } from './app.module';
 import { NestFactory } from '@nestjs/core';
 import { logger } from '@mikro-orm/nestjs';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { NestExpressApplication } from '@nestjs/platform-express';
 
 const bootstrap = async () => {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
+    rawBody: true
+  });
 
   app.enableShutdownHooks();
+
+  app.useBodyParser('text', {
+    type: ['text/xml', 'application/xml'],
+    limit: '1mb'
+  });
 
   const config = new DocumentBuilder()
     .setTitle('SecTester JS Demo')
