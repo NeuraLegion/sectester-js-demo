@@ -29,20 +29,22 @@ describe('FileService', () => {
 
   afterEach(() => runner.clear());
 
-  it('fetch() should not have RFI', async () => {
-    type FnArgs = {
-      url: string;
-    };
-    const inputSample: FnArgs = {
-      url: 'https://brightsec.com/robots.txt'
-    };
-    const fn = ({ url }: FnArgs) => fileService.fetch(url);
+  describe('fetch', () => {
+    it('should not have RFI', async () => {
+      type FnArgs = {
+        url: string;
+      };
+      const inputSample: FnArgs = {
+        url: 'https://brightsec.com/robots.txt'
+      };
+      const fn = ({ url }: FnArgs) => fileService.fetch(url);
 
-    await runner
-      .createScan({
-        name: expect.getState().currentTestName,
-        tests: [TestType.RFI]
-      })
-      .run({ inputSample, fn });
+      await runner
+        .createScan({
+          name: expect.getState().currentTestName,
+          tests: [TestType.RFI]
+        })
+        .run({ inputSample, fn });
+    });
   });
 });

@@ -29,15 +29,17 @@ describe('XmlService', () => {
 
   afterEach(() => runner.clear());
 
-  it('parse() should not have XXE', async () => {
-    const inputSample = '<root />';
-    const fn = (data: string) => xmlService.parse(data);
+  describe('parse', () => {
+    it('should not have XXE', async () => {
+      const inputSample = '<root />';
+      const fn = (data: string) => xmlService.parse(data);
 
-    await runner
-      .createScan({
-        name: expect.getState().currentTestName,
-        tests: [TestType.XXE]
-      })
-      .run({ inputSample, fn });
+      await runner
+        .createScan({
+          name: expect.getState().currentTestName,
+          tests: [TestType.XXE]
+        })
+        .run({ inputSample, fn });
+    });
   });
 });

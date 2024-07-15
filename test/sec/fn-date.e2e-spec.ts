@@ -29,23 +29,25 @@ describe('DateService', () => {
 
   afterEach(() => runner.clear());
 
-  it('calculateWeekdays() should not have DATE_MANIPULATION', async () => {
-    type FnArgs = {
-      from: string;
-      to: string;
-    };
-    const inputSample: FnArgs = {
-      from: '2022-11-30',
-      to: '2024-06-21'
-    };
-    const fn = ({ from, to }: FnArgs) =>
-      dateService.calculateWeekdays(from, to);
+  describe('calculateWeekdays', () => {
+    it('should not have DATE_MANIPULATION', async () => {
+      type FnArgs = {
+        from: string;
+        to: string;
+      };
+      const inputSample: FnArgs = {
+        from: '2022-11-30',
+        to: '2024-06-21'
+      };
+      const fn = ({ from, to }: FnArgs) =>
+        dateService.calculateWeekdays(from, to);
 
-    await runner
-      .createScan({
-        name: expect.getState().currentTestName,
-        tests: [TestType.DATE_MANIPULATION]
-      })
-      .run({ inputSample, fn });
+      await runner
+        .createScan({
+          name: expect.getState().currentTestName,
+          tests: [TestType.DATE_MANIPULATION]
+        })
+        .run({ inputSample, fn });
+    });
   });
 });
