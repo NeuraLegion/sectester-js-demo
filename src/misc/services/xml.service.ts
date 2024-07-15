@@ -9,7 +9,7 @@ export class XmlService {
     return xml2js.parseStringPromise(resolved);
   }
 
-  public resolveExternalEntities(xml: string): string {
+  private resolveExternalEntities(xml: string): string {
     const entityRegex = /<!ENTITY\s+([^ ]+)\s+SYSTEM\s+"([^"]+)"\s*>/g;
     const entities: Record<string, string> = {};
 
