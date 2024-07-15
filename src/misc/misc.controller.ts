@@ -1,3 +1,4 @@
+/* eslint-disable max-classes-per-file */
 import { DateService, FileService, XmlService } from './services';
 import type { Request } from 'express';
 import {
@@ -9,8 +10,26 @@ import {
   RawBodyRequest,
   Req
 } from '@nestjs/common';
+import {
+  ApiResponse,
+  ApiTags,
+  ApiBody,
+  ApiQuery,
+  ApiProperty
+} from '@nestjs/swagger';
+
+class FetchDto {
+  @ApiProperty({ description: 'URL to fetch content from' })
+  public url!: string;
+}
+
+class WeekdaysResponseDto {
+  @ApiProperty({ description: 'Number of weekdays in the given range' })
+  public count!: number;
+}
 
 @Controller('misc')
+@ApiTags('misc')
 export class MiscController {
   constructor(
     private readonly dateService: DateService,
@@ -19,25 +38,61 @@ export class MiscController {
   ) {}
 
   @Post('/fetch')
-  public fetch(@Body() body: { url: string }): Promise<string> {
+  @ApiResponse({
+    status: 200,
+    description: 'Successfully fetched the content from the URL',
+    type: String
+  })
+  @ApiBody({ type: FetchDto })
+  public fetch(@Body() body: FetchDto): Promise<string> {
     return this.fileService.fetch(body.url);
   }
 
   @Post('/xml')
+  @ApiResponse({
+    status: 200,
+    description: 'Successfully parsed XML',
+    type: Object
+  })
+  @ApiBody({ type: String, description: 'Raw XML string' })
   public parse(@Req() req: RawBodyRequest<Request>): Promise<string> {
     return this.xmlService.parse(req.body.toString());
   }
 
   @Get('/weekdays')
+  @ApiResponse({
+    status: 200,
+    description:
+      'Successfully calculated number of given weekday in date range',
+    type: WeekdaysResponseDto
+  })
+  @ApiQuery({
+    name: 'from',
+    required: true,
+    type: String,
+    description: 'Start date (YYYY-MM-DD)'
+  })
+  @ApiQuery({
+    name: 'to',
+    required: true,
+    type: String,
+    description: 'End date (YYYY-MM-DD)'
+  })
+  @ApiQuery({
+    name: 'weekday',
+    required: false,
+    type: Number,
+    description: 'Weekday number (0-6, where 0 is Sunday)'
+  })
   public async weekdays(
     @Query('from') from: string,
     @Query('to') to: string,
-    @Query('weekday') weekday?: number
+    @Query('weekday') weekday?: string
   ): Promise<string> {
     const count = await this.dateService.calculateWeekdays(
       from,
       to,
-      weekday ?? 1
+      weekday ? +weekday : 1
     );
 
     return JSON.stringify({ count }, null, 2);

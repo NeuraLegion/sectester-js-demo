@@ -80,7 +80,11 @@ describe('MiscController', () => {
       const count = 52;
       dateService.calculateWeekdays.mockResolvedValue(count);
 
-      const result = await miscController.weekdays(from, to, weekday);
+      const result = await miscController.weekdays(
+        from,
+        to,
+        weekday.toString()
+      );
 
       expect(dateService.calculateWeekdays).toHaveBeenCalledWith(
         from,
