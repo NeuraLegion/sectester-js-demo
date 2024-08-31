@@ -78,7 +78,7 @@
     "@commitlint/cli": "^19.3.0",
     "@commitlint/config-conventional": "^19.2.2",
     "@mikro-orm/cli": "^6.2.9",
-    "@nestjs/cli": "^10.4.2",
+    "@nestjs/cli": "^10.4.5",
     "@nestjs/schematics": "^10.1.2",
     "@nestjs/testing": "^10.3.10",
     "@sectester/core": "^0.33.1",
