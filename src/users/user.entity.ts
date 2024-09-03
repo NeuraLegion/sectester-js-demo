@@ -4,7 +4,7 @@ import { ApiProperty } from '@nestjs/swagger';
 @Entity()
 export class User {
   @PrimaryKey()
-  @ApiProperty()
+  @ApiProperty({ default: 1 })
   public id!: number;
 
   @Property()

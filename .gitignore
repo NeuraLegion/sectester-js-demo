@@ -42,3 +42,6 @@ Thumbs.db
 
 # Config Files
 .env
+
+# SQLite DB
+test.db
