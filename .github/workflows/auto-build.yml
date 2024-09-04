@@ -47,4 +47,4 @@ jobs:
         run: npm run test:e2e
 
       - name: Build Docker image
-        run: cp .env.sample .env && docker build -t sectester-js-demo .
+        run: cp .env.example .env && docker build -t sectester-js-demo .
