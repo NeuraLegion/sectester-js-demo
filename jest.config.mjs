@@ -1,10 +1,9 @@
-const { compilerOptions } = require('./tsconfig');
-
 /** @type {import('@jest/types').Config.InitialOptions} */
-module.exports = {
+export default {
   preset: 'ts-jest',
   testEnvironment: 'node',
   transform: {
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     '^.+\\.[tj]sx?$': [
       'ts-jest',
       {

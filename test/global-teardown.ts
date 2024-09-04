@@ -1,8 +1,8 @@
-const { default: config } = require('../src/mikro-orm.config');
-const isCi = require('is-ci');
-const { MikroORM } = require('@mikro-orm/core');
+import config from '../src/mikro-orm.config';
+import isCi from 'is-ci';
+import { MikroORM } from '@mikro-orm/core';
 
-module.exports = async () => {
+export default async () => {
   if (isCi) {
     return;
   }

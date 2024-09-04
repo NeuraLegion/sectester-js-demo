@@ -1,8 +1,9 @@
 /** @type {import('@jest/types').Config.InitialOptions} */
-module.exports = {
-  preset: '../jest.config.js',
+export default {
+  preset: '../jest.config.mjs',
   testRegex: '.*spec.ts$',
   transform: {
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     '^.+\\.[tj]sx?$': [
       'ts-jest',
       {
@@ -11,6 +12,6 @@ module.exports = {
       }
     ]
   },
-  globalSetup: '<rootDir>/global-setup.js',
-  globalTeardown: '<rootDir>/global-teardown.js'
+  globalSetup: '<rootDir>/global-setup.ts',
+  globalTeardown: '<rootDir>/global-teardown.ts'
 };
