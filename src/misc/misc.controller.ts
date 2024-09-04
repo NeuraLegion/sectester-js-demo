@@ -93,13 +93,13 @@ export class MiscController {
     @Query('from') from: string,
     @Query('to') to: string,
     @Query('weekday') weekday?: string
-  ): Promise<string> {
+  ): Promise<{ count: number }> {
     const count = await this.dateService.calculateWeekdays(
       from,
       to,
       weekday ? +weekday : 1
     );
 
-    return JSON.stringify({ count }, null, 2);
+    return { count };
   }
 }
