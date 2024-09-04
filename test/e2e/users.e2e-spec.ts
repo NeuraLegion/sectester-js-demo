@@ -8,7 +8,7 @@ import { MikroOrmModule } from '@mikro-orm/nestjs';
 
 describe('/users', () => {
   const user = {
-    id: 2,
+    id: 6,
     firstName: 'Karl',
     lastName: 'Jablonski',
     isActive: true
@@ -55,7 +55,7 @@ describe('/users', () => {
   describe('GET /:id', () => {
     it('should return an user by ID', async () => {
       const res = await request(app.getHttpServer())
-        .get('/users/2')
+        .get('/users/6')
         .expect(200);
 
       expect(res).toMatchObject({
@@ -81,6 +81,6 @@ describe('/users', () => {
   describe('DEL /:id', () => {
     // eslint-disable-next-line jest/expect-expect
     it('should remove an user by ID', () =>
-      request(app.getHttpServer()).delete('/users/2').expect(200));
+      request(app.getHttpServer()).delete('/users/6').expect(200));
   });
 });

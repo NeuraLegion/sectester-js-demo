@@ -80,12 +80,6 @@ Once this template is done, copying over (should be instantaneous), navigate to 
 BRIGHT_TOKEN = <your_API_key_here>
 ```
 
-Then you have to build and run services with Docker. Start Docker, and issue the command as follows:
-
-```bash
-$ docker compose up -d
-```
-
 To initialize DB schema, you should execute a migration, as shown here:
 
 ```bash
@@ -505,8 +499,6 @@ steps:
   - name: Run sec tests
     run: npm run test:sec
     env:
-      POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-      POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
       BRIGHT_TOKEN: ${{ secrets.BRIGHT_TOKEN }}
       BRIGHT_HOSTNAME: app.brightsec.com
 ```

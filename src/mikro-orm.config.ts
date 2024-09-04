@@ -1,6 +1,6 @@
 import { User } from './users';
 import { Logger } from '@nestjs/common';
-import { defineConfig } from '@mikro-orm/postgresql';
+import { defineConfig } from '@mikro-orm/sqlite';
 import { Migrator } from '@mikro-orm/migrations';
 import { config } from 'dotenv';
 
@@ -10,10 +10,8 @@ const logger = new Logger('MikroORM');
 
 export default defineConfig({
   port: 5432,
-  dbName: 'test',
+  dbName: 'test.db',
   entities: [User],
-  user: process.env.POSTGRES_USER,
-  password: process.env.POSTGRES_PASSWORD,
   logger: logger.log.bind(logger),
   migrations: {
     snapshot: false,
