@@ -91,7 +91,7 @@ describe('MiscController', () => {
         to,
         weekday
       );
-      expect(result).toBe(JSON.stringify({ count }, null, 2));
+      expect(result).toEqual({ count });
     });
 
     it('should use default weekday 1 if not provided', async () => {
