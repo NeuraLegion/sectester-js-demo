@@ -6,7 +6,19 @@ export class Migration20240903144600 extends Migration {
       'create table `user` (`id` integer not null primary key autoincrement, `first_name` text not null, `last_name` text not null, `is_active` integer not null default true);'
     );
     this.addSql(
-      `insert into "user" ("first_name", "last_name") values ('Matti', 'Karttunen');`
+      `insert into user (id, first_name, last_name) values (1, 'Brynna', 'Lapping');`
+    );
+    this.addSql(
+      `insert into user (id, first_name, last_name) values (2, 'Ginnie', 'Denisard');`
+    );
+    this.addSql(
+      `insert into user (id, first_name, last_name) values (3, 'Emelita', 'Engley');`
+    );
+    this.addSql(
+      `insert into user (id, first_name, last_name) values (4, 'Bryanty', 'Craigmyle');`
+    );
+    this.addSql(
+      `insert into user (id, first_name, last_name) values (5, 'Nolan', 'Portchmouth');`
     );
   }
 
