@@ -92,6 +92,12 @@ Finally, perform this command in terminal to run the application:
 $ npm start
 ```
 
+_Note_: Alternatively, you can quickly run the SecTester SDK Demo app using Docker:
+
+```bash
+docker build -t sectester-js-demo-image . && docker run --name sectester-js-demo -p 3000:3000 -d sectester-js-demo-image
+```
+
 While having the application running, open a browser and type `http://localhost:3000/api`, and hit enter.
 You should see the Swagger UI page for that application that allows you to test the RESTFul CRUD API, like in the following screenshot:
 
