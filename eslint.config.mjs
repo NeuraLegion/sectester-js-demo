@@ -1,15 +1,14 @@
 /* eslint-disable import-x/no-extraneous-dependencies */
 import eslint from '@eslint/js';
-// eslint-disable-next-line import-x/no-unresolved
-import tseslint from 'typescript-eslint';
+import { configs, config } from 'typescript-eslint';
 import eslintPluginImportX from 'eslint-plugin-import-x';
 import jest from 'eslint-plugin-jest';
 
 /* eslint-disable @typescript-eslint/naming-convention */
 
-export default tseslint.config(
+export default config(
   eslint.configs.recommended,
-  ...tseslint.configs.strict,
+  ...configs.strict,
   eslintPluginImportX.flatConfigs.recommended,
   eslintPluginImportX.flatConfigs.typescript,
   {
