@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import xml2js from 'xml2js';
+import { parseStringPromise } from 'xml2js';
 
 @Injectable()
 export class XmlService {
   public parse(xml: string): Promise<string> {
     const resolved = this.resolveExternalEntities(xml);
 
-    return xml2js.parseStringPromise(resolved);
+    return parseStringPromise(resolved);
   }
 
   private resolveExternalEntities(xml: string): string {
