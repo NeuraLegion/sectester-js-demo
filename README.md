@@ -103,6 +103,8 @@ You should see the Swagger UI page for that application that allows you to test 
 
 ![Swagger UI](https://user-images.githubusercontent.com/38690835/171161124-92e0cc8c-90e1-4168-9242-63c6c598a26d.png)
 
+If for some reason (like discovery) you need the JSON schema, it is avilable also under: `http://localhost:3000/api-json`
+
 To explore the Swagger UI:
 
 - Click on the `POST /users` endpoint
