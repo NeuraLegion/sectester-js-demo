@@ -49,12 +49,12 @@ Trying out Bright’s SecTester is _**free**_ 💸, so let’s get started!
 ### Get a Bright API key
 
 1.  Register for a free account at Bright’s [**signup**](https://app.brightsec.com/signup) page
-2.  Optional: Skip the quickstart wizard and go directly to [**User API key creation**](https://app.brightsec.com/profile)
-3.  Create a Bright API key ([**check out our doc on how to create a user key**](https://docs.brightsec.com/docs/manage-your-personal-account#manage-your-personal-api-keys-authentication-tokens))
+2.  Go to [**User settings**](https://app.brightsec.com/profile) to create your own API key
+3.  Create a Bright API key ([**check out our doc on how to create a user key**](https://docs.brightsec.com/docs/manage-your-personal-account#managing-your-personal-api-keys-authentication-tokens))
 4.  Save the Bright API key
-    1.  We recommend using your Github repository secrets feature to store the key, accessible via the `Settings > Security > Secrets > Actions` configuration. We use the ENV variable called `BRIGHT_TOKEN` in our examples
+    1.  We recommend using GitHub’s repository secrets feature to store your API key securely. To do this, navigate to `Settings > Secrets and variables > Actions` in your GitHub repository, create a new repository secret named BRIGHT_TOKEN and set its value to your Bright API key.
     2.  If you don’t use that option, make sure you save the key in a secure location. You will need to access it later on in the project but will not be able to view it again.
-    3.  More info on [**how to use ENV vars in Github actions**](https://docs.github.com/en/actions/learn-github-actions/environment-variables)
+    3.  More info on [**how to use ENV vars in GitHub actions**](https://docs.github.com/en/actions/learn-github-actions/environment-variables)
 
 > ⚠️ Make sure your API key is saved in a location where you can retrieve it later! You will need it in these next steps!
 
@@ -500,7 +500,8 @@ Full documentation can be found in the [`@sectester/runner`](https://github.com/
 
 ### Example of a CI configuration
 
-You can integrate this library into any CI you use, for that you will need to add the `BRIGHT_TOKEN` ENV vars to your CI. Then add the following to your `github actions` configuration:
+You can integrate this library into any CI you use, for that you will need to add the `BRIGHT_TOKEN` environment variable to your CI.
+Then add the following to your GitHub actions configuration:
 
 ```yaml
 steps:
