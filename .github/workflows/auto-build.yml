@@ -1,25 +1,23 @@
 name: CI / Automated testing
-
 on:
-  pull_request:
-    branches:
-      - '**'
+  workflow_dispatch:
+# on:
+#   pull_request:
+#     branches:
+#       - '**'
 
 env:
   DEPENDENCIES_CACHE: npm-cache
-
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
       - name: Set Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 18
-
       - name: Cache npm modules
         uses: actions/cache@v4
         with:
@@ -27,24 +25,17 @@ jobs:
           key: ${{ env.DEPENDENCIES_CACHE }}-${{ hashFiles('package-lock.json') }}
           restore-keys: |
             ${{ env.DEPENDENCIES_CACHE }}-
-
       - name: Install deps in quiet mode
         run: npm ci -q
-
       - name: Lint application
         run: npm run lint
-
       - name: Check formatting
         run: npm run format
-
       - name: Build application
         run: npm run build
-
       - name: Run unit tests
         run: npm run test
-
       - name: Run e2e tests
         run: npm run test:e2e
-
       - name: Build Docker image
         run: cp .env.example .env && docker build -t sectester-js-demo .
