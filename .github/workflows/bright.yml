@@ -1,0 +1,70 @@
+name: Bright
+
+on:
+  pull_request:
+    branches:
+      - '**'
+
+permissions:
+  checks: write
+  contents: read
+  id-token: write
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 18.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Cache npm modules
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: npm-cache-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            npm-cache-
+
+      - name: Install application dependencies
+        run: npm ci -q
+
+      - name: Build Docker image and start application
+        run: |
+          cp .env.example .env
+          docker build -t sectester-js-demo .
+          docker run -d -p 3000:3000 --name sectester-js-demo sectester-js-demo
+
+      - name: Wait for application to be ready
+        run: |
+          for i in {1..30}; do
+            nc -zv 127.0.0.1 3000 && echo "Application is ready" && exit 0
+            echo "Waiting for application..."
+            sleep 5
+          done
+          echo "Application did not become ready in time" && exit 1
+
+      - name: Set up Node.js >= 22.x for SecTesterJS
+        uses: actions/setup-node@v4
+        with:
+          node-version: '>=22'
+
+      - name: Install SecTesterJS dependencies
+        run: npm i --save=false --prefix .brightsec @sectester/core @sectester/repeater @sectester/scan @sectester/runner @sectester/reporter
+
+      - name: Run security tests
+        env:
+          BRIGHT_HOSTNAME: ${{ vars.BRIGHT_HOSTNAME }}
+          BRIGHT_PROJECT_ID: ${{ vars.BRIGHT_PROJECT_ID }}
+          BRIGHT_AUTH_ID: ${{ vars.BRIGHT_AUTH_ID }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRIGHT_TOKEN: ${{ secrets.BRIGHT_TOKEN }}
+          BRIGHT_TARGET_URL: http://127.0.0.1:3000
+        run: node --experimental-transform-types --experimental-strip-types --experimental-detect-module --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --disable-warning=ExperimentalWarning --test-force-exit --test-concurrency=4 --test .brightsec/tests/*.test.ts
+
+      - name: Clean up
+        run: docker stop sectester-js-demo && docker rm sectester-js-demo
