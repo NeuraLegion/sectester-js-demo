@@ -1,0 +1,77 @@
+name: Bright
+
+on:
+  pull_request:
+    branches:
+      - '**'
+
+permissions:
+  checks: write
+  contents: read
+  id-token: write
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 18.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: |
+          npm ci
+
+      - name: Copy environment file
+        run: |
+          cp .env.example .env
+
+      - name: Set BRIGHT_TOKEN
+        run: |
+          echo "BRIGHT_TOKEN=${{ secrets.BRIGHT_TOKEN }}" >> .env
+
+      - name: Run database migrations
+        run: |
+          npm run migration:up
+
+      - name: Start application
+        env:
+          BRIGHT_TOKEN: ${{ secrets.BRIGHT_TOKEN }}
+        run: |
+          npm start &
+
+      - name: Wait for application to be ready
+        run: |
+          for i in {1..30}; do nc -z 127.0.0.1 3000 && exit 0 || sleep 5; done; exit 1
+
+      - name: Set up Node.js 22.x for SecTesterJS
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install SecTesterJS dependencies
+        run: |
+          npm i --save=false --prefix .brightsec @sectester/core@0.47.0 @sectester/repeater@0.47.0 @sectester/scan@0.47.0 @sectester/runner@0.47.0 @sectester/reporter@0.47.0
+
+      - name: Authenticate with Bright
+        uses: ./.github/workflows/composite/configure-bright-credentials
+        with:
+          BRIGHT_HOSTNAME: development.playground.brightsec.com
+          BRIGHT_PROJECT_ID: uFhRojMSZcP4hfcKc45Svn
+          BRIGHT_TOKEN: ${{ secrets.BRIGHT_TOKEN }}
+
+      - name: Run security tests
+        env:
+          BRIGHT_HOSTNAME: development.playground.brightsec.com
+          BRIGHT_PROJECT_ID: uFhRojMSZcP4hfcKc45Svn
+          BRIGHT_AUTH_ID: ${{ vars.BRIGHT_AUTH_ID }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRIGHT_TOKEN: ${{ env.BRIGHT_TOKEN }}
+          BRIGHT_TARGET_URL: http://127.0.0.1:3000
+          SECTESTER_SCAN_POOL_SIZE: ${{ vars.SECTESTER_SCAN_POOL_SIZE }}
+        run: |
+          node --experimental-transform-types --experimental-strip-types --experimental-detect-module --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --disable-warning=ExperimentalWarning --test-force-exit --test-concurrency=4 --test .brightsec/tests/*.test.ts
