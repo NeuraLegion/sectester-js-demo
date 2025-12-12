@@ -94,6 +94,20 @@ export class MiscController {
     @Query('to') to: string,
     @Query('weekday') weekday?: string
   ): Promise<{ count: number }> {
+    const startDate = new Date(from);
+    const endDate = new Date(to);
+
+    if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+      throw new BadRequestException('Invalid date format.');
+    }
+
+    const maxRangeInDays = 365; // Limit the range to 1 year
+    const rangeInDays = (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24);
+
+    if (rangeInDays > maxRangeInDays) {
+      throw new BadRequestException('Date range should not exceed one year.');
+    }
+
     const count = await this.dateService.calculateWeekdays(
       from,
       to,
