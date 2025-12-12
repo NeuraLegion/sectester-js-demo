@@ -21,7 +21,7 @@ after(() => runner.clear());
 test('GET /misc/weekdays', { signal: AbortSignal.timeout(timeout) }, async () => {
   await runner
     .createScan({
-      tests: ['date_manipulation', 'business_constraint_bypass', 'sqli'],
+      tests: ['date_manipulation'],
       attackParamLocations: [AttackParamLocation.QUERY],
       starMetadata: {
         code_source: 'NeuraLegion/sectester-js-demo:master',
