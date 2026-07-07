@@ -35,7 +35,7 @@ export class DateService {
     }
 
     const rangeInDays =
-      (endDate.getTime() - startDate.getTime()) / (24 * 60 * 60 * 1000);
+      (endDate.getTime() - startDate.getTime()) / (24 * 60 * 60 * 1000) + 1;
     if (rangeInDays > maxRangeInDays) {
       throw new BadRequestException(
         `Date range must not exceed ${maxRangeInDays} days`
