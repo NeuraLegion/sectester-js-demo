@@ -94,10 +94,22 @@ export class MiscController {
     @Query('to') to: string,
     @Query('weekday') weekday?: string
   ): Promise<{ count: number }> {
+    if (!from || !to) {
+      throw new BadRequestException('"from" and "to" query parameters are required');
+    }
+
+    let parsedWeekday = 1;
+    if (weekday !== undefined) {
+      parsedWeekday = Number(weekday);
+      if (Number.isNaN(parsedWeekday)) {
+        throw new BadRequestException('"weekday" must be a number');
+      }
+    }
+
     const count = await this.dateService.calculateWeekdays(
       from,
       to,
-      weekday ? +weekday : 1
+      parsedWeekday
     );
 
     return { count };
