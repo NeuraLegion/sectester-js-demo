@@ -1,0 +1,30 @@
+FROM node:20-slim
+
+WORKDIR /app
+
+ENV NODE_ENV=production \
+    PORT=3001 \
+    NODE_PATH=/opt/harness/node_modules:/app/node_modules \
+    CI=true
+
+RUN mkdir -p /opt/harness \
+    && cd /opt/harness \
+    && npm init -y \
+    && npm install --omit=dev \
+      express \
+      @nestjs/common \
+      reflect-metadata \
+      xml2js
+
+COPY package*.json ./
+
+# Build requires Nest CLI from devDependencies, so install full deps first.
+RUN npm ci --ignore-scripts
+
+COPY . /app
+
+RUN npm run build
+
+EXPOSE 3001
+
+CMD ["node", "harness.js"]
