@@ -14,7 +14,7 @@ $ docker build -t bright-harness-local -f Dockerfile.harness .
 #3 DONE 0.0s
 
 #4 [internal] load build context
-#4 transferring context: 17.90kB done
+#4 transferring context: 26.68kB done
 #4 DONE 0.0s
 
 #5 [1/6] FROM docker.io/library/node:20-bookworm-slim@sha256:2cf067cfed83d5ea958367df9f966191a942351a2df77d6f0193e162b5febfc0
@@ -28,55 +28,24 @@ $ docker build -t bright-harness-local -f Dockerfile.harness .
 #7 CACHED
 
 #8 [4/6] RUN npm install --omit=dev --ignore-scripts
-#8 1.070 npm warn deprecated rimraf@3.0.2: Rimraf versions prior to v4 are no longer supported
-#8 1.315 npm warn deprecated npmlog@6.0.2: This package is no longer supported.
-#8 1.611 npm warn deprecated inflight@1.0.6: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.
-#8 1.726 npm warn deprecated gauge@4.0.4: This package is no longer supported.
-#8 1.955 npm warn deprecated are-we-there-yet@3.0.1: This package is no longer supported.
-#8 2.113 npm warn deprecated @npmcli/move-file@1.1.2: This functionality has been moved to @npmcli/fs
-#8 2.287 npm warn deprecated glob@7.2.3: Glob versions prior to v9 are no longer supported
-#8 2.321 npm warn deprecated glob@7.2.3: Glob versions prior to v9 are no longer supported
-#8 2.376 npm warn deprecated glob@7.2.3: Glob versions prior to v9 are no longer supported
-#8 20.41 
-#8 20.41 added 360 packages, and audited 361 packages in 20s
-#8 20.41 
-#8 20.41 44 packages are looking for funding
-#8 20.41   run `npm fund` for details
-#8 20.51 
-#8 20.51 35 vulnerabilities (2 low, 15 moderate, 17 high, 1 critical)
-#8 20.51 
-#8 20.51 To address issues that do not require attention, run:
-#8 20.51   npm audit fix
-#8 20.51 
-#8 20.51 To address all issues (including breaking changes), run:
-#8 20.51   npm audit fix --force
-#8 20.51 
-#8 20.51 Run `npm audit` for details.
-#8 20.51 npm notice
-#8 20.51 npm notice New major version of npm available! 10.8.2 -> 12.0.1
-#8 20.51 npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.0.1
-#8 20.51 npm notice To update run: npm install -g npm@12.0.1
-#8 20.51 npm notice
-#8 DONE 20.6s
+#8 CACHED
 
 #9 [5/6] COPY . /app
-#9 DONE 0.1s
+#9 DONE 0.0s
 
 #10 [6/6] COPY harness.js /app/harness.js
 #10 DONE 0.0s
 
 #11 exporting to image
-#11 exporting layers
-#11 exporting layers 1.7s done
-#11 exporting manifest sha256:d9a490967dd54cb606af69f991ba828925b0dc32f42abdffd6ef95dc007001e0 done
-#11 exporting config sha256:195fa915330c38662c3a96b7cd4c6602af942eb23063250e4f23723d0ea443d4 done
-#11 exporting attestation manifest sha256:2f2b7c93ac37c6ac76fa71aaf643f8b77639b6178e47231eb8574663f9087d29 done
-#11 exporting manifest list sha256:e609cc70062fe396469eb5d0fcc713cde6298e8e8ab38ce4087f4b796362daf4 done
+#11 exporting layers 0.1s done
+#11 exporting manifest sha256:9c2adfe2526ad880a52102666dd1b5cdd1482a6434baa2836e58dc0e329cdcee done
+#11 exporting config sha256:a3722e602d57d9cb5202e407aaf76410ba810c73d1231792508a9bcdaa61d3fa done
+#11 exporting attestation manifest sha256:9a0079a8ea4480a74ae91bbb5d2ba0d2033ef292779cb77d163454e46687c2ed done
+#11 exporting manifest list sha256:7a94d693ed185fc7af9482eb53c241ee66e74d7c92bc08c5935199a9daccc662 done
 #11 naming to docker.io/library/bright-harness-local:latest done
-#11 unpacking to docker.io/library/bright-harness-local:latest
-#11 unpacking to docker.io/library/bright-harness-local:latest 0.6s done
-#11 DONE 2.4s
+#11 unpacking to docker.io/library/bright-harness-local:latest 0.0s done
+#11 DONE 0.1s
 
-View build details: docker-desktop://dashboard/build/desktop-linux/desktop-linux/whi30nef1752eo8qtdv9i8w51
+View build details: docker-desktop://dashboard/build/desktop-linux/desktop-linux/7u29svwpgd5jovyziub8r7za0
 
 [exit code=0 signal=null]
