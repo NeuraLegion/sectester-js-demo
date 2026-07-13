@@ -1,0 +1,51 @@
+$ docker build -t bright-harness-local -f Dockerfile.harness .
+
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile.harness
+#1 transferring dockerfile: 242B done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/node:20-bookworm-slim
+#2 DONE 0.7s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 2B done
+#3 DONE 0.0s
+
+#4 [internal] load build context
+#4 transferring context: 26.68kB done
+#4 DONE 0.0s
+
+#5 [1/6] FROM docker.io/library/node:20-bookworm-slim@sha256:2cf067cfed83d5ea958367df9f966191a942351a2df77d6f0193e162b5febfc0
+#5 resolve docker.io/library/node:20-bookworm-slim@sha256:2cf067cfed83d5ea958367df9f966191a942351a2df77d6f0193e162b5febfc0 0.0s done
+#5 DONE 0.0s
+
+#6 [2/6] WORKDIR /app
+#6 CACHED
+
+#7 [3/6] COPY package*.json ./
+#7 CACHED
+
+#8 [4/6] RUN npm install --omit=dev --ignore-scripts
+#8 CACHED
+
+#9 [5/6] COPY . /app
+#9 DONE 0.0s
+
+#10 [6/6] COPY harness.js /app/harness.js
+#10 DONE 0.0s
+
+#11 exporting to image
+#11 exporting layers 0.1s done
+#11 exporting manifest sha256:9c2adfe2526ad880a52102666dd1b5cdd1482a6434baa2836e58dc0e329cdcee done
+#11 exporting config sha256:a3722e602d57d9cb5202e407aaf76410ba810c73d1231792508a9bcdaa61d3fa done
+#11 exporting attestation manifest sha256:9a0079a8ea4480a74ae91bbb5d2ba0d2033ef292779cb77d163454e46687c2ed done
+#11 exporting manifest list sha256:7a94d693ed185fc7af9482eb53c241ee66e74d7c92bc08c5935199a9daccc662 done
+#11 naming to docker.io/library/bright-harness-local:latest done
+#11 unpacking to docker.io/library/bright-harness-local:latest 0.0s done
+#11 DONE 0.1s
+
+View build details: docker-desktop://dashboard/build/desktop-linux/desktop-linux/7u29svwpgd5jovyziub8r7za0
+
+[exit code=0 signal=null]
