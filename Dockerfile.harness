@@ -1,0 +1,27 @@
+FROM node:20-slim
+
+WORKDIR /app
+
+ENV NODE_ENV=production \
+    PORT=3001 \
+    CI=true
+
+# Copy project files first so we can install dependencies and compile the
+# TypeScript sources that the harness requires at runtime.
+COPY package.json package-lock.json* tsconfig*.json ./
+COPY src ./src
+
+# TypeScript is only available as a devDependency, so install all deps for the
+# build, compile with npx, then prune devDependencies for the final image.
+RUN npm install --ignore-scripts \
+ && npx tsc -p tsconfig.build.json \
+ && npm prune --omit=dev \
+ && npm cache clean --force
+
+# Copy the rest of the repository and the harness entrypoint.
+COPY . /app
+COPY harness.js /app/harness.js
+
+EXPOSE 3001
+
+CMD ["node", "harness.js"]

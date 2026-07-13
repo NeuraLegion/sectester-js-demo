@@ -1,0 +1,198 @@
+Command failed.
+
+command: docker build -t bright-harness-local -f Dockerfile.harness .
+
+status: exitCode=1, killed=false
+
+error: Command failed: docker build -t bright-harness-local -f Dockerfile.harness .
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile.harness
+#1 transferring dockerfile: 768B done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/node:20-slim
+#2 DONE 0.3s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 2B done
+#3 DONE 0.0s
+
+#4 [internal] load build context
+#4 transferring context: 13.83kB done
+#4 DONE 0.0s
+
+#5 [1/7] FROM docker.io/library/node:20-slim@sha256:2cf067cfed83d5ea958367df9f966191a942351a2df77d6f0193e162b5febfc0
+#5 resolve docker.io/library/node:20-slim@sha256:2cf067cfed83d5ea958367df9f966191a942351a2df77d6f0193e162b5febfc0 0.0s done
+#5 DONE 0.0s
+
+#6 [2/7] WORKDIR /app
+#6 CACHED
+
+#7 [3/7] COPY package.json package-lock.json* tsconfig*.json ./
+#7 CACHED
+
+#8 [4/7] COPY src ./src
+#8 CACHED
+
+#9 [5/7] RUN npm install --ignore-scripts  && npx tsc -p tsconfig.build.json  && npm prune --omit=dev  && npm cache clean --force
+#9 1.058 npm warn deprecated rimraf@3.0.2: Rimraf versions prior to v4 are no longer supported
+#9 1.253 npm warn deprecated npmlog@6.0.2: This package is no longer supported.
+#9 1.548 npm warn deprecated inflight@1.0.6: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.
+#9 1.668 npm warn deprecated gauge@4.0.4: This package is no longer supported.
+#9 1.943 npm warn deprecated are-we-there-yet@3.0.1: This package is no longer supported.
+#9 2.156 npm warn deprecated glob@7.2.3: Glob versions prior to v9 are no longer supported
+#9 2.158 npm warn deprecated glob@7.2.3: Glob versions prior to v9 are no longer supported
+#9 2.254 npm warn deprecated @npmcli/move-file@1.1.2: This functionality has been moved to @npmcli/fs
+#9 2.258 npm warn deprecated glob@7.2.3: Glob versions prior to v9 are no longer supported
+#9 18.57 
+#9 18.57 added 360 packages, and audited 361 packages in 18s
+#9 18.57 
+#9 18.57 44 packages are looking for funding
+#9 18.57   run `npm fund` for details
+#9 18.66 
+#9 18.66 35 vulnerabilities (2 low, 15 moderate, 17 high, 1 critical)
+#9 18.66 
+#9 18.66 To address issues that do not require attention, run:
+#9 18.66   npm audit fix
+#9 18.66 
+#9 18.66 To address all issues (including breaking changes), run:
+#9 18.66   npm audit fix --force
+#9 18.66 
+#9 18.66 Run `npm audit` for details.
+#9 19.54 npm warn exec The following package was not found and will be installed: tsc@2.0.4
+#9 19.62 npm warn deprecated tsc@2.0.4: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
+#9 19.84 
+#9 19.84 [41m                                                                               [0m
+#9 19.84 [41m[37m                This is not the tsc command you are looking for                [0m
+#9 19.84 [41m                                                                               [0m
+#9 19.84 
+#9 19.84 To get access to the TypeScript compiler, [34mtsc[0m, from the command line either:
+#9 19.84 
+#9 19.84 - Use [1mnpm install typescript[0m to first add TypeScript to your project [1mbefore[0m using npx
+#9 19.84 - Use [1myarn[0m to avoid accidentally running code from un-installed packages
+#9 ERROR: process "/bin/sh -c npm install --ignore-scripts  && npx tsc -p tsconfig.build.json  && npm prune --omit=dev  && npm cache clean --force" did not complete successfully: exit code: 1
+------
+ > [5/7] RUN npm install --ignore-scripts  && npx tsc -p tsconfig.build.json  && npm prune --omit=dev  && npm cache clean --force:
+19.62 npm warn deprecated tsc@2.0.4: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
+19.84 
+19.84 [41m                                                                               [0m
+19.84 [41m[37m                This is not the tsc command you are looking for                [0m
+19.84 [41m                                                                               [0m
+19.84 
+19.84 To get access to the TypeScript compiler, [34mtsc[0m, from the command line either:
+19.84 
+19.84 - Use [1mnpm install typescript[0m to first add TypeScript to your project [1mbefore[0m using npx
+19.84 - Use [1myarn[0m to avoid accidentally running code from un-installed packages
+------
+Dockerfile.harness:16
+--------------------
+  15 |     # build, compile with npx, then prune devDependencies for the final image.
+  16 | >>> RUN npm install --ignore-scripts \
+  17 | >>>  && npx tsc -p tsconfig.build.json \
+  18 | >>>  && npm prune --omit=dev \
+  19 | >>>  && npm cache clean --force
+  20 |     
+--------------------
+ERROR: failed to build: failed to solve: process "/bin/sh -c npm install --ignore-scripts  && npx tsc -p tsconfig.build.json  && npm prune --omit=dev  && npm cache clean --force" did not complete successfully: exit code: 1
+
+View build details: docker-desktop://dashboard/build/desktop-linux/desktop-linux/8w0f1x18hphegjfm89chl6344
+
+
+stdout: <empty>
+
+stderr:
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile.harness
+#1 transferring dockerfile: 768B done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/node:20-slim
+#2 DONE 0.3s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 2B done
+#3 DONE 0.0s
+
+#4 [internal] load build context
+#4 transferring context: 13.83kB done
+#4 DONE 0.0s
+
+#5 [1/7] FROM docker.io/library/node:20-slim@sha256:2cf067cfed83d5ea958367df9f966191a942351a2df77d6f0193e162b5febfc0
+#5 resolve docker.io/library/node:20-slim@sha256:2cf067cfed83d5ea958367df9f966191a942351a2df77d6f0193e162b5febfc0 0.0s done
+#5 DONE 0.0s
+
+#6 [2/7] WORKDIR /app
+#6 CACHED
+
+#7 [3/7] COPY package.json package-lock.json* tsconfig*.json ./
+#7 CACHED
+
+#8 [4/7] COPY src ./src
+#8 CACHED
+
+#9 [5/7] RUN npm install --ignore-scripts  && npx tsc -p tsconfig.build.json  && npm prune --omit=dev  && npm cache clean --force
+#9 1.058 npm warn deprecated rimraf@3.0.2: Rimraf versions prior to v4 are no longer supported
+#9 1.253 npm warn deprecated npmlog@6.0.2: This package is no longer supported.
+#9 1.548 npm warn deprecated inflight@1.0.6: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.
+#9 1.668 npm warn deprecated gauge@4.0.4: This package is no longer supported.
+#9 1.943 npm warn deprecated are-we-there-yet@3.0.1: This package is no longer supported.
+#9 2.156 npm warn deprecated glob@7.2.3: Glob versions prior to v9 are no longer supported
+#9 2.158 npm warn deprecated glob@7.2.3: Glob versions prior to v9 are no longer supported
+#9 2.254 npm warn deprecated @npmcli/move-file@1.1.2: This functionality has been moved to @npmcli/fs
+#9 2.258 npm warn deprecated glob@7.2.3: Glob versions prior to v9 are no longer supported
+#9 18.57 
+#9 18.57 added 360 packages, and audited 361 packages in 18s
+#9 18.57 
+#9 18.57 44 packages are looking for funding
+#9 18.57   run `npm fund` for details
+#9 18.66 
+#9 18.66 35 vulnerabilities (2 low, 15 moderate, 17 high, 1 critical)
+#9 18.66 
+#9 18.66 To address issues that do not require attention, run:
+#9 18.66   npm audit fix
+#9 18.66 
+#9 18.66 To address all issues (including breaking changes), run:
+#9 18.66   npm audit fix --force
+#9 18.66 
+#9 18.66 Run `npm audit` for details.
+#9 19.54 npm warn exec The following package was not found and will be installed: tsc@2.0.4
+#9 19.62 npm warn deprecated tsc@2.0.4: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
+#9 19.84 
+#9 19.84 [41m                                                                               [0m
+#9 19.84 [41m[37m                This is not the tsc command you are looking for                [0m
+#9 19.84 [41m                                                                               [0m
+#9 19.84 
+#9 19.84 To get access to the TypeScript compiler, [34mtsc[0m, from the command line either:
+#9 19.84 
+#9 19.84 - Use [1mnpm install typescript[0m to first add TypeScript to your project [1mbefore[0m using npx
+#9 19.84 - Use [1myarn[0m to avoid accidentally running code from un-installed packages
+#9 ERROR: process "/bin/sh -c npm install --ignore-scripts  && npx tsc -p tsconfig.build.json  && npm prune --omit=dev  && npm cache clean --force" did not complete successfully: exit code: 1
+------
+ > [5/7] RUN npm install --ignore-scripts  && npx tsc -p tsconfig.build.json  && npm prune --omit=dev  && npm cache clean --force:
+19.62 npm warn deprecated tsc@2.0.4: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
+19.84 
+19.84 [41m                                                                               [0m
+19.84 [41m[37m                This is not the tsc command you are looking for                [0m
+19.84 [41m                                                                               [0m
+19.84 
+19.84 To get access to the TypeScript compiler, [34mtsc[0m, from the command line either:
+19.84 
+19.84 - Use [1mnpm install typescript[0m to first add TypeScript to your project [1mbefore[0m using npx
+19.84 - Use [1myarn[0m to avoid accidentally running code from un-installed packages
+------
+Dockerfile.harness:16
+--------------------
+  15 |     # build, compile with npx, then prune devDependencies for the final image.
+  16 | >>> RUN npm install --ignore-scripts \
+  17 | >>>  && npx tsc -p tsconfig.build.json \
+  18 | >>>  && npm prune --omit=dev \
+  19 | >>>  && npm cache clean --force
+  20 |     
+--------------------
+ERROR: failed to build: failed to solve: process "/bin/sh -c npm install --ignore-scripts  && npx tsc -p tsconfig.build.json  && npm prune --omit=dev  && npm cache clean --force" did not complete successfully: exit code: 1
+
+View build details: docker-desktop://dashboard/build/desktop-linux/desktop-linux/8w0f1x18hphegjfm89chl6344
+
+note: stdout/stderr are separate execFile streams; chronological interleaving is unavailable.
