@@ -1,0 +1,52 @@
+[harness] inspected src/misc/services/xml.service.ts: class=yes, method=yes
+[harness] inspected src/misc/services/xml.service.ts: class=yes, method=yes
+[harness] inspected src/misc/services/xml.service.ts: class=yes, method=yes
+[harness] inspected src/misc/services/date.service.ts: class=yes, method=yes
+[harness] ts loader: not available, will prefer built JS when needed
+[harness] skipping xml.parse: xml.parse: SyntaxError: Invalid or unexpected token
+    at compileSourceTextModule (node:internal/modules/esm/utils:346:16)
+    at ModuleLoader.importSyncForRequire (node:internal/modules/esm/loader:382:18)
+    at loadESMFromCJS (node:internal/modules/cjs/loader:1363:24)
+    at Module._compile (node:internal/modules/cjs/loader:1503:5)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1623:10)
+    at Module.load (node:internal/modules/cjs/loader:1266:32)
+    at Module._load (node:internal/modules/cjs/loader:1091:12)
+    at Module.require (node:internal/modules/cjs/loader:1289:19)
+    at require (node:internal/modules/helpers:182:18)
+    at loadModule (/app/harness.js:254:12)
+[harness] skipping xml.resolveExternalEntities: xml.resolveExternalEntities: SyntaxError: Invalid or unexpected token
+    at compileSourceTextModule (node:internal/modules/esm/utils:346:16)
+    at ModuleLoader.importSyncForRequire (node:internal/modules/esm/loader:382:18)
+    at loadESMFromCJS (node:internal/modules/cjs/loader:1363:24)
+    at Module._compile (node:internal/modules/cjs/loader:1503:5)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1623:10)
+    at Module.load (node:internal/modules/cjs/loader:1266:32)
+    at Module._load (node:internal/modules/cjs/loader:1091:12)
+    at Module.require (node:internal/modules/cjs/loader:1289:19)
+    at require (node:internal/modules/helpers:182:18)
+    at loadModule (/app/harness.js:254:12)
+[harness] skipping xml.getExternalEntity: xml.getExternalEntity: SyntaxError: Invalid or unexpected token
+    at compileSourceTextModule (node:internal/modules/esm/utils:346:16)
+    at ModuleLoader.importSyncForRequire (node:internal/modules/esm/loader:382:18)
+    at loadESMFromCJS (node:internal/modules/cjs/loader:1363:24)
+    at Module._compile (node:internal/modules/cjs/loader:1503:5)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1623:10)
+    at Module.load (node:internal/modules/cjs/loader:1266:32)
+    at Module._load (node:internal/modules/cjs/loader:1091:12)
+    at Module.require (node:internal/modules/cjs/loader:1289:19)
+    at require (node:internal/modules/helpers:182:18)
+    at loadModule (/app/harness.js:254:12)
+[harness] skipping date.calculateWeekdays: date.calculateWeekdays: SyntaxError: Invalid or unexpected token
+    at compileSourceTextModule (node:internal/modules/esm/utils:346:16)
+    at ModuleLoader.importSyncForRequire (node:internal/modules/esm/loader:382:18)
+    at loadESMFromCJS (node:internal/modules/cjs/loader:1363:24)
+    at Module._compile (node:internal/modules/cjs/loader:1503:5)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1623:10)
+    at Module.load (node:internal/modules/cjs/loader:1266:32)
+    at Module._load (node:internal/modules/cjs/loader:1091:12)
+    at Module.require (node:internal/modules/cjs/loader:1289:19)
+    at require (node:internal/modules/helpers:182:18)
+    at loadModule (/app/harness.js:254:12)
+[harness] listening on 3001
+[harness] registered routes: none
+[harness] skipped targets: 4
