@@ -94,10 +94,16 @@ export class MiscController {
     @Query('to') to: string,
     @Query('weekday') weekday?: string
   ): Promise<{ count: number }> {
+    const parsedWeekday = weekday === undefined ? 1 : Number(weekday);
+
+    if (!Number.isInteger(parsedWeekday) || parsedWeekday < 0 || parsedWeekday > 6) {
+      throw new BadRequestException('weekday must be an integer between 0 and 6');
+    }
+
     const count = await this.dateService.calculateWeekdays(
       from,
       to,
-      weekday ? +weekday : 1
+      parsedWeekday
     );
 
     return { count };
