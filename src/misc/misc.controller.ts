@@ -19,6 +19,8 @@ import {
 } from '@nestjs/swagger';
 import { IncomingMessage } from 'http';
 
+const ISO_DATE_REGEX = /^\d{4}-\d{2}-\d{2}$/;
+
 class FetchDto {
   @ApiProperty({ description: 'URL to fetch content from' })
   public url!: string;
@@ -94,10 +96,19 @@ export class MiscController {
     @Query('to') to: string,
     @Query('weekday') weekday?: string
   ): Promise<{ count: number }> {
+    if (!ISO_DATE_REGEX.test(from) || !ISO_DATE_REGEX.test(to)) {
+      throw new BadRequestException('Dates must use YYYY-MM-DD format');
+    }
+
+    const parsedWeekday = weekday === undefined ? 1 : Number(weekday);
+    if (!Number.isInteger(parsedWeekday) || parsedWeekday < 0 || parsedWeekday > 6) {
+      throw new BadRequestException('weekday must be an integer between 0 and 6');
+    }
+
     const count = await this.dateService.calculateWeekdays(
       from,
       to,
-      weekday ? +weekday : 1
+      parsedWeekday
     );
 
     return { count };
