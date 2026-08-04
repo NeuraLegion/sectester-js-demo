@@ -38,7 +38,9 @@ describe('FileService', () => {
 
       const result = await service.fetch(url);
 
-      expect(fetchMock).toHaveBeenCalledWith(url);
+      expect(fetchMock).toHaveBeenCalledWith(new URL(url), {
+        redirect: 'error'
+      });
       expect(result).toBe(expectedContent);
     });
 
@@ -55,7 +57,9 @@ describe('FileService', () => {
       await expect(result).rejects.toThrow(
         `Error fetching "${url}", status: ${status}`
       );
-      expect(fetchMock).toHaveBeenCalledWith(url);
+      expect(fetchMock).toHaveBeenCalledWith(new URL(url), {
+        redirect: 'error'
+      });
     });
 
     it('should throw an error when network request fails', async () => {
@@ -66,7 +70,16 @@ describe('FileService', () => {
       const result = service.fetch(url);
 
       await expect(result).rejects.toThrow(errorMessage);
-      expect(fetchMock).toHaveBeenCalledWith(url);
+      expect(fetchMock).toHaveBeenCalledWith(new URL(url), {
+        redirect: 'error'
+      });
+    });
+
+    it('should reject hosts outside the allowlist', async () => {
+      await expect(service.fetch('https://localhost')).rejects.toThrow(
+        'Target host is not allowed'
+      );
+      expect(fetchMock).not.toHaveBeenCalled();
     });
   });
 });

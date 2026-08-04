@@ -1,5 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 
+const ALLOWED_FETCH_HOSTS = new Set(['example.com', 'www.example.com']);
+
 @Injectable()
 export class FileService {
   public async fetch(url: string): Promise<string> {
@@ -29,21 +31,12 @@ export class FileService {
 
     const hostname = parsedUrl.hostname.toLowerCase();
 
-    if (
-      hostname === 'localhost' ||
-      hostname.endsWith('.localhost') ||
-      hostname === '127.0.0.1' ||
-      hostname === '::1' ||
-      hostname === '0.0.0.0' ||
-      hostname === '169.254.169.254' ||
-      hostname.startsWith('10.') ||
-      hostname.startsWith('127.') ||
-      hostname.startsWith('169.254.') ||
-      hostname.startsWith('192.168.') ||
-      /^172\.(1[6-9]|2\d|3[0-1])\./.test(hostname)
-    ) {
+    if (!ALLOWED_FETCH_HOSTS.has(hostname)) {
       throw new BadRequestException('Target host is not allowed');
     }
+
+    parsedUrl.username = '';
+    parsedUrl.password = '';
 
     return parsedUrl;
   }
