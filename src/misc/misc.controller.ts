@@ -18,9 +18,13 @@ import {
   ApiProperty
 } from '@nestjs/swagger';
 import { IncomingMessage } from 'http';
+import { IsNotEmpty, IsString, MaxLength } from 'class-validator';
 
 class FetchDto {
   @ApiProperty({ description: 'URL to fetch content from' })
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(2048)
   public url!: string;
 }
 
