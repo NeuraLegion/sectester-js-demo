@@ -36,6 +36,8 @@ class WeekdaysResponseDto {
 @Controller('misc')
 @ApiTags('misc')
 export class MiscController {
+  private static readonly DATE_ONLY_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
+
   constructor(
     private readonly dateService: DateService,
     private readonly fileService: FileService,
@@ -98,10 +100,29 @@ export class MiscController {
     @Query('to') to: string,
     @Query('weekday') weekday?: string
   ): Promise<{ count: number }> {
+    if (
+      !from ||
+      !to ||
+      !MiscController.DATE_ONLY_PATTERN.test(from) ||
+      !MiscController.DATE_ONLY_PATTERN.test(to)
+    ) {
+      throw new BadRequestException(
+        'The "from" and "to" query parameters must use YYYY-MM-DD format'
+      );
+    }
+
+    const parsedWeekday = weekday === undefined ? 1 : Number(weekday);
+
+    if (!Number.isInteger(parsedWeekday) || parsedWeekday < 0 || parsedWeekday > 6) {
+      throw new BadRequestException(
+        'The "weekday" query parameter must be an integer between 0 and 6'
+      );
+    }
+
     const count = await this.dateService.calculateWeekdays(
       from,
       to,
-      weekday ? +weekday : 1
+      parsedWeekday
     );
 
     return { count };
