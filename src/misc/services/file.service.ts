@@ -1,6 +1,9 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 
-const ALLOWED_FETCH_HOSTS = new Set(['example.com', 'www.example.com']);
+const ALLOWED_FETCH_URLS = new Set([
+  'https://example.com/',
+  'https://www.example.com/'
+]);
 
 @Injectable()
 export class FileService {
@@ -25,18 +28,27 @@ export class FileService {
       throw new BadRequestException('Invalid URL');
     }
 
-    if (!['http:', 'https:'].includes(parsedUrl.protocol)) {
-      throw new BadRequestException('Only HTTP and HTTPS URLs are allowed');
+    if (parsedUrl.protocol !== 'https:') {
+      throw new BadRequestException('Only HTTPS URLs are allowed');
     }
 
-    const hostname = parsedUrl.hostname.toLowerCase();
-
-    if (!ALLOWED_FETCH_HOSTS.has(hostname)) {
-      throw new BadRequestException('Target host is not allowed');
+    if (parsedUrl.username || parsedUrl.password) {
+      throw new BadRequestException('Credentials in URL are not allowed');
     }
 
-    parsedUrl.username = '';
-    parsedUrl.password = '';
+    if (parsedUrl.port && parsedUrl.port !== '443') {
+      throw new BadRequestException('Target port is not allowed');
+    }
+
+    if (parsedUrl.search || parsedUrl.hash) {
+      throw new BadRequestException('Query strings and fragments are not allowed');
+    }
+
+    const normalizedUrl = parsedUrl.toString();
+
+    if (!ALLOWED_FETCH_URLS.has(normalizedUrl)) {
+      throw new BadRequestException('Target URL is not allowed');
+    }
 
     return parsedUrl;
   }
