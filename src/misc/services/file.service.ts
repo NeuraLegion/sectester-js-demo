@@ -13,6 +13,29 @@ const BLOCKED_HOSTNAMES = new Set([
   'metadata.goog'
 ]);
 
+// Positive allow-list of remote hosts that this endpoint is permitted to
+// fetch content from. This prevents Remote File Inclusion (RFI) by making
+// sure only pre-approved, trusted domains can ever be requested, instead of
+// relying solely on a deny-list of "dangerous" targets. Additional trusted
+// hosts can be supplied via the ALLOWED_FETCH_HOSTS environment variable
+// (comma-separated list of hostnames/domains).
+const DEFAULT_ALLOWED_HOSTNAMES = ['brightsec.com', 'brokencrystals.com', 'example.com'];
+
+const ALLOWED_HOSTNAMES = new Set(
+  [
+    ...DEFAULT_ALLOWED_HOSTNAMES,
+    ...(process.env.ALLOWED_FETCH_HOSTS?.split(',') ?? [])
+  ]
+    .map(host => host.trim().toLowerCase())
+    .filter(Boolean)
+);
+
+function isAllowedHostname(hostname: string): boolean {
+  return [...ALLOWED_HOSTNAMES].some(
+    allowed => hostname === allowed || hostname.endsWith(`.${allowed}`)
+  );
+}
+
 /**
  * Determines whether a given IPv4/IPv6 address belongs to a private,
  * loopback, link-local, or otherwise reserved range that should never
@@ -95,6 +118,12 @@ export class FileService {
 
     if (isIP(hostname) && isPrivateOrReservedIp(hostname)) {
       throw new BadRequestException('Fetching this host is not allowed');
+    }
+
+    if (!isAllowedHostname(hostname)) {
+      throw new BadRequestException(
+        'Fetching content from this host is not allowed'
+      );
     }
   }
 }
