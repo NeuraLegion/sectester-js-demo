@@ -1,14 +1,21 @@
 import { CreateUserDto } from './create-user.dto';
+import {
+  AuthenticatedGuard,
+  AuthenticatedRequest
+} from './guards/authenticated.guard';
 import { User } from './user.entity';
 import { UsersService } from './users.service';
 import {
   Body,
   Controller,
   Delete,
+  ForbiddenException,
   Get,
   Param,
   Post,
   Query,
+  Req,
+  UseGuards,
   NotFoundException
 } from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -35,9 +42,27 @@ export class UsersController {
   }
 
   @Get(':id')
+  @UseGuards(AuthenticatedGuard)
   @ApiResponse({ status: 200, type: User })
+  @ApiResponse({
+    status: 401,
+    description: 'Authentication is required to access this resource.'
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'You are not allowed to access this user record.'
+  })
   @ApiResponse({ status: 404, description: 'No such user.' })
-  public async findOne(@Param('id') id: number): Promise<User> {
+  public async findOne(
+    @Param('id') id: number,
+    @Req() request?: AuthenticatedRequest
+  ): Promise<User> {
+    if (request?.user?.id !== Number(id)) {
+      throw new ForbiddenException(
+        'You are not allowed to access this user record.'
+      );
+    }
+
     const user = await this.usersService.findOne(id);
 
     if (!user) {
