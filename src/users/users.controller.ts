@@ -6,13 +6,23 @@ import {
   Controller,
   Delete,
   Get,
+  Req,
   Param,
   ParseIntPipe,
   Post,
   Query,
-  NotFoundException
+  NotFoundException,
+  UseGuards
 } from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Request } from 'express';
+import { UserIdentityGuard } from './user-identity.guard';
+
+type AuthenticatedRequest = Request & {
+  user: {
+    id: number;
+  };
+};
 
 @Controller('users')
 @ApiTags('users')
@@ -36,10 +46,14 @@ export class UsersController {
   }
 
   @Get(':id')
+  @UseGuards(UserIdentityGuard)
   @ApiResponse({ status: 200, type: User })
   @ApiResponse({ status: 404, description: 'No such user.' })
-  public async findOne(@Param('id', ParseIntPipe) id: number): Promise<User> {
-    const user = await this.usersService.findOne(id);
+  public async findOne(
+    @Param('id', ParseIntPipe) id: number,
+    @Req() req: AuthenticatedRequest
+  ): Promise<User> {
+    const user = await this.usersService.findOne(id, req.user.id);
 
     if (!user) {
       throw new NotFoundException('No such user.');
@@ -49,11 +63,19 @@ export class UsersController {
   }
 
   @Delete(':id')
+  @UseGuards(UserIdentityGuard)
   @ApiResponse({
     status: 204,
     description: 'The record has been successfully removed.'
   })
-  public remove(@Param('id') id: number): Promise<void> {
-    return this.usersService.remove(id);
+  public async remove(
+    @Param('id', ParseIntPipe) id: number,
+    @Req() req: AuthenticatedRequest
+  ): Promise<void> {
+    if (req.user.id !== id) {
+      throw new NotFoundException('No such user.');
+    }
+
+    await this.usersService.remove(id, req.user.id);
   }
 }
