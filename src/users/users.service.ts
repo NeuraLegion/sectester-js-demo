@@ -49,7 +49,7 @@ export class UsersService {
   public async findOne(id: number): Promise<User | null> {
     const [user]: User[] = await this.orm.em
       .getConnection()
-      .execute(`select * from "user" where "id" = ${id}`);
+      .execute('select * from "user" where "id" = ?', [id]);
 
     return user ? this.orm.em.map(User, user) : null;
   }
