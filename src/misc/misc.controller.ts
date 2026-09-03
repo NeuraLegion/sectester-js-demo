@@ -20,7 +20,10 @@ import {
 import { IncomingMessage } from 'http';
 
 class FetchDto {
-  @ApiProperty({ description: 'URL to fetch content from' })
+  @ApiProperty({
+    description:
+      'URL to fetch content from. Only approved HTTPS resources are allowed.'
+  })
   public url!: string;
 }
 
@@ -46,7 +49,23 @@ export class MiscController {
   })
   @ApiBody({ type: FetchDto })
   public fetch(@Body() body: FetchDto): Promise<string> {
-    return this.fileService.fetch(body.url);
+    if (typeof body?.url !== 'string' || body.url.trim().length === 0) {
+      throw new BadRequestException('A non-empty URL is required');
+    }
+
+    let parsedUrl: URL;
+
+    try {
+      parsedUrl = new URL(body.url);
+    } catch {
+      throw new BadRequestException('URL must be a valid absolute URL');
+    }
+
+    if (!['http:', 'https:'].includes(parsedUrl.protocol)) {
+      throw new BadRequestException('Only HTTP and HTTPS URLs are allowed');
+    }
+
+    return this.fileService.fetch(parsedUrl.toString());
   }
 
   @Post('/xml')
