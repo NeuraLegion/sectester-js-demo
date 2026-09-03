@@ -1,5 +1,6 @@
 /* eslint-disable max-classes-per-file */
 import { DateService, FileService, XmlService } from './services';
+import { ALLOWED_FETCH_HOSTS } from './services/file.service';
 import {
   BadRequestException,
   Body,
@@ -61,8 +62,17 @@ export class MiscController {
       throw new BadRequestException('URL must be a valid absolute URL');
     }
 
-    if (!['http:', 'https:'].includes(parsedUrl.protocol)) {
-      throw new BadRequestException('Only HTTP and HTTPS URLs are allowed');
+    const normalizedHostname = parsedUrl.hostname.replace(/\.$/, '').toLowerCase();
+
+    if (
+      parsedUrl.protocol !== 'https:' ||
+      parsedUrl.username ||
+      parsedUrl.password ||
+      !ALLOWED_FETCH_HOSTS.has(normalizedHostname)
+    ) {
+      throw new BadRequestException(
+        'Only approved HTTPS URLs are allowed'
+      );
     }
 
     return this.fileService.fetch(parsedUrl.toString());

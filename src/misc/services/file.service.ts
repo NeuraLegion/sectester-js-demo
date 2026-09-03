@@ -1,6 +1,9 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 
-const ALLOWED_FETCH_HOSTS = new Set(['example.com', 'brokencrystals.com']);
+export const ALLOWED_FETCH_HOSTS = new Set([
+  'example.com',
+  'brokencrystals.com'
+]);
 
 @Injectable()
 export class FileService {
@@ -13,9 +16,13 @@ export class FileService {
       throw new BadRequestException('URL must be a valid absolute URL');
     }
 
+    const normalizedHostname = parsedUrl.hostname.replace(/\.$/, '').toLowerCase();
+
     if (
       parsedUrl.protocol !== 'https:' ||
-      !ALLOWED_FETCH_HOSTS.has(parsedUrl.hostname)
+      parsedUrl.username ||
+      parsedUrl.password ||
+      !ALLOWED_FETCH_HOSTS.has(normalizedHostname)
     ) {
       throw new BadRequestException('URL host is not allowed');
     }
