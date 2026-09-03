@@ -33,6 +33,28 @@ class WeekdaysResponseDto {
   public count!: number;
 }
 
+const MS_PER_DAY = 24 * 60 * 60 * 1000;
+const MAX_WEEKDAYS_RANGE_DAYS = 31;
+
+const parseIsoDate = (value: string): Date | null => {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+    return null;
+  }
+
+  const [year, month, day] = value.split('-').map(Number);
+  const date = new Date(Date.UTC(year, month - 1, day));
+
+  if (
+    date.getUTCFullYear() !== year ||
+    date.getUTCMonth() !== month - 1 ||
+    date.getUTCDate() !== day
+  ) {
+    return null;
+  }
+
+  return date;
+};
+
 @Controller('misc')
 @ApiTags('misc')
 export class MiscController {
@@ -123,10 +145,36 @@ export class MiscController {
     @Query('to') to: string,
     @Query('weekday') weekday?: string
   ): Promise<{ count: number }> {
+    const startDate = parseIsoDate(from);
+    const endDate = parseIsoDate(to);
+
+    if (!startDate || !endDate) {
+      throw new BadRequestException('Dates must use the YYYY-MM-DD format');
+    }
+
+    if (startDate > endDate) {
+      throw new BadRequestException('The "from" date must be before or equal to "to"');
+    }
+
+    const rangeInDays = Math.floor((endDate.getTime() - startDate.getTime()) / MS_PER_DAY) + 1;
+
+    if (rangeInDays > MAX_WEEKDAYS_RANGE_DAYS) {
+      throw new BadRequestException(
+        `Date range must not exceed ${MAX_WEEKDAYS_RANGE_DAYS} days`
+      );
+    }
+
+    if (
+      weekday !== undefined &&
+      (!/^\d+$/.test(weekday) || Number(weekday) < 0 || Number(weekday) > 6)
+    ) {
+      throw new BadRequestException('Weekday must be an integer between 0 and 6');
+    }
+
     const count = await this.dateService.calculateWeekdays(
       from,
       to,
-      weekday ? +weekday : 1
+      weekday ? Number(weekday) : 1
     );
 
     return { count };
