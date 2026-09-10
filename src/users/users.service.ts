@@ -45,13 +45,9 @@ export class UsersService {
    *   return user ? this.orm.em.map(User, user) : null;
    * }
    * ```
-   */
-  public async findOne(id: number): Promise<User | null> {
-    const [user]: User[] = await this.orm.em
-      .getConnection()
-      .execute(`select * from "user" where "id" = ${id}`);
-
-    return user ? this.orm.em.map(User, user) : null;
+  */
+  public findOne(id: number): Promise<User | null> {
+    return this.orm.em.findOne(User, { id });
   }
 
   public async remove(id: number): Promise<void> {
