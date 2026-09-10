@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "generatedAt": "2026-09-10T14:40:15.844Z",
+  "instructionHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "startup": {
+    "command": "docker build -t sectester-js-demo-ci . && docker run --rm -d --name sectester-js-demo-ci -p 3000:3000 sectester-js-demo-ci",
+    "port": 3000,
+    "healthCheckPath": "/api-json",
+    "context": "Attempt 1 failed because the existing Dockerfile required a root .env file that was missing from the checkout. I added .env using the existing BRIGHT_HOSTNAME and BRIGHT_TOKEN values from the host environment, and patched Nest bootstrap to listen on 0.0.0.0 via app.listen(..., '0.0.0.0'). Rebuilt and started successfully; curl to http://127.0.0.1:3000/api-json returned HTTP 200 with the Swagger/OpenAPI document."
+  },
+  "scanPrep": {
+    "replayCommands": [],
+    "context": "Relaxed the app’s effective request-blocking controls, rebuilt the container, and verified six rapid POST /users requests plus oversized JSON/XML POSTs succeed without 429/throttle/CAPTCHA behavior.\nChange: Patched src/main.ts to relax NestJS/Express request filtering by raising JSON, URL-encoded, text/XML, and raw body-parser limits to 50mb and increasing urlencoded parameterLimit to 1000000.\nChange: Rebuilt and relaunched the single app container with the verified docker build/run command so the source change is active.\nChange: Queried the running container and app runtime: environment and SQLite schema show no DB-backed rate-limit/CAPTCHA settings tables, package/runtime inspection shows no NestJS throttler/rate-limit/session/CAPTCHA modules, and OpenAPI/source inspection shows no login/auth endpoints or server-side CAPTCHA enforcement."
+  }
+}
