@@ -7,9 +7,16 @@ export class FileService {
     'www.example.com'
   ]);
 
+  private static readonly SAFE_FETCH_OPTIONS: RequestInit = {
+    redirect: 'error'
+  };
+
   public async fetch(url: string): Promise<string> {
     const targetUrl = this.validateUrl(url);
-    const response = await fetch(targetUrl.toString());
+    const response = await fetch(
+      targetUrl.toString(),
+      FileService.SAFE_FETCH_OPTIONS
+    );
 
     if (!response.ok) {
       throw new Error(
