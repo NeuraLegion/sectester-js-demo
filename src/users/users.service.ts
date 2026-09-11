@@ -45,13 +45,16 @@ export class UsersService {
    *   return user ? this.orm.em.map(User, user) : null;
    * }
    * ```
-   */
-  public async findOne(id: number): Promise<User | null> {
-    const [user]: User[] = await this.orm.em
-      .getConnection()
-      .execute(`select * from "user" where "id" = ${id}`);
+  */
+  public async findOne(
+    id: number,
+    authenticatedUserId: number
+  ): Promise<User | null> {
+    if (id !== authenticatedUserId) {
+      return null;
+    }
 
-    return user ? this.orm.em.map(User, user) : null;
+    return this.orm.em.findOne(User, { id: authenticatedUserId });
   }
 
   public async remove(id: number): Promise<void> {
