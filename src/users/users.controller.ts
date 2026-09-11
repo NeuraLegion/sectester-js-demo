@@ -7,6 +7,7 @@ import {
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Post,
   Query,
   NotFoundException
@@ -37,7 +38,7 @@ export class UsersController {
   @Get(':id')
   @ApiResponse({ status: 200, type: User })
   @ApiResponse({ status: 404, description: 'No such user.' })
-  public async findOne(@Param('id') id: number): Promise<User> {
+  public async findOne(@Param('id', ParseIntPipe) id: number): Promise<User> {
     const user = await this.usersService.findOne(id);
 
     if (!user) {
