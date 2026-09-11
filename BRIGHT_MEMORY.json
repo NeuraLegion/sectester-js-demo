@@ -1,0 +1,14 @@
+{
+  "version": 2,
+  "generatedAt": "2026-09-11T08:36:04.457Z",
+  "instructionHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "startup": {
+    "command": "docker build -t sectester-js-demo . && docker run -d --name sectester-js-demo-app -p 3000:3000 sectester-js-demo",
+    "port": 3000,
+    "healthCheckPath": "/api",
+    "context": "Used the repo Dockerfile. Verified the app serves with HTTP 200 from GET /api (Swagger UI). Container logs show Nest application started successfully and published routes."
+  },
+  "scanPrep": {
+    "context": "Summary: Inspected the NestJS app, runtime environment, and SQLite-backed runtime state; found no active rate limiting, auth lockout, CAPTCHA, CSRF, session, IP filtering, or WAF-style controls to relax, and verified with 6 rapid POST requests to a real write endpoint that no throttling occurs.\nRecovery guidance (security controls): App/service startup remains `docker build -t sectester-js-demo . && docker run -d --name sectester-js-demo-app -p 3000:3000 sectester-js-demo`. For a future scan-prep pass, re-check runtime state inside the container first: `docker exec sectester-js-demo-app sh -lc 'cat .env'` and query SQLite via the installed ORM, e.g. `docker exec sectester-js-demo-app node - <<'NODE'\nconst { MikroORM } = require('@mikro-orm/sqlite');\n(async () => {\n  const orm = await MikroORM.init(require('./dist/mikro-orm.config').default);\n  console.log(await orm.em.getConnection().execute(\"select name from sqlite_master where type='table' order by name\"));\n  await orm.close(true);\n})();\nNODE`. NestJS does not ship a default rate limiter here; confirm that `package.json` still lacks `@nestjs/throttler`/`express-rate-limit` and that `src/` still has no guards or middleware registrations. There is no login/auth endpoint in this app; use rapid POSTs to `/users` for throttling verification and treat repeated `201` responses without 429/\"too many requests\" bodies as confirmation.\nRecovery guidance (2FA/MFA): No 2FA bypass is needed in the current codebase. Evidence: repo-wide searches for twoFactor/2fa/mfa/totp/otp/authenticator found no auth-flow code; Swagger at /api-json exposes only unauthenticated endpoints; the SQLite schema only contains user(id, first_name, last_name, is_active). If a future scan-prep pass needs to recheck, example inspection steps are: search src/ for 2FA/auth terms, inspect src/users/user.entity.ts and migrations, and query /usr/src/app/test.db inside the app container with a small Node sqlite3 script to confirm the DAST Scanner user rows still have is_active=1."
+  }
+}
