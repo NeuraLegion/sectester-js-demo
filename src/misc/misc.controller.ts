@@ -32,11 +32,39 @@ class WeekdaysResponseDto {
 @Controller('misc')
 @ApiTags('misc')
 export class MiscController {
+  private static readonly ISO_DATE_RE = /^(\d{4})-(\d{2})-(\d{2})$/;
+
   constructor(
     private readonly dateService: DateService,
     private readonly fileService: FileService,
     private readonly xmlService: XmlService
   ) {}
+
+  private static isValidIsoDate(value: string): boolean {
+    const match = MiscController.ISO_DATE_RE.exec(value);
+    if (!match) {
+      return false;
+    }
+
+    const [, year, month, day] = match;
+    const parsedDate = new Date(
+      Date.UTC(Number(year), Number(month) - 1, Number(day))
+    );
+
+    return (
+      parsedDate.getUTCFullYear() === Number(year) &&
+      parsedDate.getUTCMonth() === Number(month) - 1 &&
+      parsedDate.getUTCDate() === Number(day)
+    );
+  }
+
+  private static getDateRangeInDays(from: string, to: string): number {
+    const startDate = new Date(`${from}T00:00:00.000Z`);
+    const endDate = new Date(`${to}T00:00:00.000Z`);
+    const millisecondsPerDay = 24 * 60 * 60 * 1000;
+
+    return (endDate.getTime() - startDate.getTime()) / millisecondsPerDay + 1;
+  }
 
   @Post('/fetch')
   @ApiResponse({
@@ -98,10 +126,43 @@ export class MiscController {
     @Query('to') to: string,
     @Query('weekday') weekday?: string
   ): Promise<{ count: number }> {
+    if (
+      typeof from !== 'string' ||
+      typeof to !== 'string' ||
+      !MiscController.isValidIsoDate(from) ||
+      !MiscController.isValidIsoDate(to)
+    ) {
+      throw new BadRequestException(
+        'Dates must be valid and use YYYY-MM-DD format'
+      );
+    }
+
+    const parsedWeekday = weekday === undefined ? 1 : Number(weekday);
+    if (
+      !Number.isInteger(parsedWeekday) ||
+      parsedWeekday < 0 ||
+      parsedWeekday > 6
+    ) {
+      throw new BadRequestException('Weekday must be an integer between 0 and 6');
+    }
+
+    const rangeInDays = MiscController.getDateRangeInDays(from, to);
+    if (rangeInDays < 1) {
+      throw new BadRequestException(
+        'The "from" date must be before or equal to the "to" date'
+      );
+    }
+
+    if (rangeInDays > DateService.MAX_DATE_RANGE_DAYS) {
+      throw new BadRequestException(
+        `Date range must not exceed ${DateService.MAX_DATE_RANGE_DAYS} days`
+      );
+    }
+
     const count = await this.dateService.calculateWeekdays(
       from,
       to,
-      weekday ? +weekday : 1
+      parsedWeekday
     );
 
     return { count };
