@@ -6,7 +6,14 @@ const ALLOWED_FETCH_HOSTS = new Set(['example.com', 'www.example.com']);
 export class FileService {
   public async fetch(url: string): Promise<string> {
     const parsedUrl = this.parseAndValidateUrl(url);
-    const response = await fetch(parsedUrl.toString());
+    const response = await fetch(parsedUrl.toString(), {
+      redirect: 'error'
+    });
+
+    if (typeof response.url === 'string' && response.url.length > 0) {
+      this.parseAndValidateUrl(response.url);
+    }
+
     if (!response.ok) {
       throw new Error(
         `Error fetching "${parsedUrl.toString()}", status: ${response.status}`
