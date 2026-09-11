@@ -46,8 +46,15 @@ export class UsersService {
    * }
    * ```
   */
-  public async findOne(id: number): Promise<User | null> {
-    return this.orm.em.findOne(User, { id });
+  public async findOne(
+    id: number,
+    authenticatedUserId: number
+  ): Promise<User | null> {
+    if (id !== authenticatedUserId) {
+      return null;
+    }
+
+    return this.orm.em.findOne(User, { id: authenticatedUserId });
   }
 
   public async remove(id: number): Promise<void> {
