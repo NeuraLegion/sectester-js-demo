@@ -46,7 +46,11 @@ export class MiscController {
   })
   @ApiBody({ type: FetchDto })
   public fetch(@Body() body: FetchDto): Promise<string> {
-    return this.fileService.fetch(body.url);
+    if (!body || typeof body.url !== 'string' || body.url.trim().length === 0) {
+      throw new BadRequestException('URL is required');
+    }
+
+    return this.fileService.fetch(body.url.trim());
   }
 
   @Post('/xml')
