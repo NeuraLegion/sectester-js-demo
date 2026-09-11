@@ -33,12 +33,13 @@ describe('FileService', () => {
       const expectedContent = 'Sample content';
       fetchMock.mockResolvedValue({
         ok: true,
+        url,
         text: jest.fn().mockResolvedValue(expectedContent)
       });
 
       const result = await service.fetch(url);
 
-      expect(fetchMock).toHaveBeenCalledWith(url);
+      expect(fetchMock).toHaveBeenCalledWith(url, { redirect: 'error' });
       expect(result).toBe(expectedContent);
     });
 
@@ -47,6 +48,7 @@ describe('FileService', () => {
       const status = 404;
       fetchMock.mockResolvedValue({
         ok: false,
+        url,
         status
       });
 
@@ -55,7 +57,7 @@ describe('FileService', () => {
       await expect(result).rejects.toThrow(
         `Error fetching "${url}", status: ${status}`
       );
-      expect(fetchMock).toHaveBeenCalledWith(url);
+      expect(fetchMock).toHaveBeenCalledWith(url, { redirect: 'error' });
     });
 
     it('should throw an error when network request fails', async () => {
@@ -66,7 +68,15 @@ describe('FileService', () => {
       const result = service.fetch(url);
 
       await expect(result).rejects.toThrow(errorMessage);
-      expect(fetchMock).toHaveBeenCalledWith(url);
+      expect(fetchMock).toHaveBeenCalledWith(url, { redirect: 'error' });
+    });
+
+    it('should reject URLs outside the HTTPS allowlist', async () => {
+      await expect(
+        service.fetch('http://filedealer.nexploit.app/rfi.md5.txt')
+      ).rejects.toThrow('Only HTTPS URLs from approved hosts are allowed');
+
+      expect(fetchMock).not.toHaveBeenCalled();
     });
   });
 });

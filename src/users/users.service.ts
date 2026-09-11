@@ -2,10 +2,20 @@ import { User } from './user.entity';
 import { CreateUserDto } from './create-user.dto';
 import { Injectable } from '@nestjs/common';
 import { MikroORM } from '@mikro-orm/core';
+import { createHmac, randomBytes, timingSafeEqual } from 'crypto';
+
+const USER_ACCESS_TOKEN_SECRET =
+  process.env.USERS_ACCESS_TOKEN_SECRET ?? randomBytes(32).toString('hex');
 
 @Injectable()
 export class UsersService {
   constructor(private readonly orm: MikroORM) {}
+
+  private signUserId(userId: number): string {
+    return createHmac('sha256', USER_ACCESS_TOKEN_SECRET)
+      .update(String(userId))
+      .digest('hex');
+  }
 
   public async create(createUserDto: CreateUserDto): Promise<User> {
     const user = new User();
@@ -15,6 +25,32 @@ export class UsersService {
     await this.orm.em.persistAndFlush(user);
 
     return user;
+  }
+
+  public issueAccessToken(userId: number): string {
+    return `${userId}.${this.signUserId(userId)}`;
+  }
+
+  public isAccessTokenValid(userId: number, accessToken?: string | null): boolean {
+    if (!accessToken) {
+      return false;
+    }
+
+    const [tokenUserId, signature] = accessToken.split('.');
+
+    if (
+      tokenUserId !== String(userId) ||
+      !signature ||
+      !/^[a-f0-9]{64}$/i.test(signature)
+    ) {
+      return false;
+    }
+
+    const expectedSignature = this.signUserId(userId);
+    const providedSignatureBuffer = Buffer.from(signature, 'hex');
+    const expectedSignatureBuffer = Buffer.from(expectedSignature, 'hex');
+
+    return timingSafeEqual(providedSignatureBuffer, expectedSignatureBuffer);
   }
 
   public findAll(query: Omit<Partial<User>, 'id'> = {}): Promise<User[]> {
@@ -46,12 +82,8 @@ export class UsersService {
    * }
    * ```
    */
-  public async findOne(id: number): Promise<User | null> {
-    const [user]: User[] = await this.orm.em
-      .getConnection()
-      .execute(`select * from "user" where "id" = ${id}`);
-
-    return user ? this.orm.em.map(User, user) : null;
+  public findOne(id: number): Promise<User | null> {
+    return this.orm.em.findOne(User, { id });
   }
 
   public async remove(id: number): Promise<void> {
