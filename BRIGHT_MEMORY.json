@@ -1,0 +1,14 @@
+{
+  "version": 2,
+  "generatedAt": "2026-09-28T05:58:40.235Z",
+  "instructionHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "startup": {
+    "command": "docker build -t sectester-js-demo-image . && docker run --name sectester-js-demo -p 3000:3000 -d sectester-js-demo-image",
+    "port": 3000,
+    "healthCheckPath": "/api-json",
+    "context": "Built the existing Dockerfile, supplied the missing local .env with an empty optional BRIGHT_TOKEN, and ran the NestJS app with SQLite migrations applied during the image build. The first run responded successfully but logged an IPv6 loopback URL, so I updated src/main.ts to bind explicitly to 0.0.0.0, rebuilt, restarted, and verified HTTP 200 from /api-json. Container logs report Nest application successfully started and the app is running on http://127.0.0.1:3000."
+  },
+  "scanPrep": {
+    "context": "Summary: DAST preparation completed: the NestJS app has no discovered rate-limit or related security-control enforcement to relax, and rapid valid POST verification succeeded.\nChange: Inspected the NestJS source, dependencies, environment, compiled application, and SQLite runtime database for rate limiting, throttling, lockout, CAPTCHA, CSRF, session, WAF, IP allowlist, and request-blocking controls; no such controls were present, so no files or settings required modification.\nChange: Queried all runtime SQLite tables/settings inside the running container; the database contains only the users and MikroORM migration tables, with no security or rate-limit settings.\nChange: Verified the running application with five rapid valid POST requests to the real write path (POST /users); all reached application processing and returned HTTP 201 with successful JSON responses. No 429, throttle, rate-limit, CAPTCHA, or blocking response occurred.\nRecovery guidance (security controls): This application currently has no authentication endpoint or server-side CAPTCHA verification. For future scan-preparation passes, re-check source and runtime settings if authentication or new middleware is added; specifically inspect @nestjs/throttler, custom guards/middleware, reverse-proxy configuration, and any newly introduced database-backed settings. Preserve the existing 1 MB XML body-parser limit unless scanner requirements demonstrate it blocks intended payloads.\nRecovery guidance (2FA/MFA): This app has no authentication or 2FA/MFA implementation, configuration, or schema fields. The SQLite `user` table only contains `id`, `first_name`, `last_name`, and `is_active`. For future scan preparation, verify with `GET http://localhost:3000/users` and `GET http://localhost:3000/users/1`; both currently return HTTP 200 and all listed users have `isActive: true`. No rebuild or database changes are needed for 2FA."
+  }
+}
