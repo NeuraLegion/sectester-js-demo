@@ -91,9 +91,7 @@ describe('UserService', () => {
 
       const result = await service.findOne(input);
 
-      expect(orm.em.getConnection().execute).toHaveBeenCalledWith(
-        `select * from "user" where "id" = ${input}`
-      );
+      expect(orm.em.findOne).toHaveBeenCalledWith(User, { id: input });
       expect(result).toEqual(oneUser);
     });
   });
