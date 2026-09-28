@@ -7,11 +7,14 @@ import {
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Post,
   Query,
-  NotFoundException
+  NotFoundException,
+  UseGuards
 } from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { UsersAuthGuard } from './users-auth.guard';
 
 @Controller('users')
 @ApiTags('users')
@@ -29,15 +32,19 @@ export class UsersController {
   }
 
   @Get()
+  @UseGuards(UsersAuthGuard)
   @ApiResponse({ status: 200, type: User, isArray: true })
   public findAll(@Query() query?: Omit<Partial<User>, 'id'>): Promise<User[]> {
     return this.usersService.findAll(query);
   }
 
   @Get(':id')
+  @UseGuards(UsersAuthGuard)
   @ApiResponse({ status: 200, type: User })
   @ApiResponse({ status: 404, description: 'No such user.' })
-  public async findOne(@Param('id') id: number): Promise<User> {
+  public async findOne(
+    @Param('id', ParseIntPipe) id: number
+  ): Promise<User> {
     const user = await this.usersService.findOne(id);
 
     if (!user) {
