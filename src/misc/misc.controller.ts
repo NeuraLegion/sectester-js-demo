@@ -24,6 +24,9 @@ class FetchDto {
   public url!: string;
 }
 
+const isFetchUrlPayload = (body: FetchDto): body is FetchDto & { url: string } =>
+  typeof body?.url === 'string' && body.url.trim().length > 0;
+
 class WeekdaysResponseDto {
   @ApiProperty({ description: 'Number of weekdays in the given range' })
   public count!: number;
@@ -46,7 +49,11 @@ export class MiscController {
   })
   @ApiBody({ type: FetchDto })
   public fetch(@Body() body: FetchDto): Promise<string> {
-    return this.fileService.fetch(body.url);
+    if (!isFetchUrlPayload(body)) {
+      throw new BadRequestException('A non-empty URL is required');
+    }
+
+    return this.fileService.fetch(body.url.trim());
   }
 
   @Post('/xml')
