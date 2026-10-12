@@ -2,7 +2,10 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 
 const FETCH_TIMEOUT_MS = 10_000;
 const ALLOWED_FETCH_PROTOCOL = 'https:';
-const ALLOWED_FETCH_HOSTS = new Set(['example.com', 'brokencrystals.com']);
+const ALLOWED_FETCH_URLS = new Set([
+  'https://example.com/',
+  'https://brokencrystals.com/config.js'
+]);
 
 @Injectable()
 export class FileService {
@@ -38,8 +41,18 @@ export class FileService {
       throw new BadRequestException('Credentials in the URL are not allowed');
     }
 
-    if (!ALLOWED_FETCH_HOSTS.has(parsedUrl.hostname)) {
-      throw new BadRequestException('URL host is not allowed');
+    if (parsedUrl.port && parsedUrl.port !== '443') {
+      throw new BadRequestException('Only the default HTTPS port is allowed');
+    }
+
+    if (parsedUrl.hash) {
+      throw new BadRequestException('URL fragments are not allowed');
+    }
+
+    const normalizedUrl = parsedUrl.toString();
+
+    if (!ALLOWED_FETCH_URLS.has(normalizedUrl)) {
+      throw new BadRequestException('URL is not allowed');
     }
 
     return parsedUrl;
