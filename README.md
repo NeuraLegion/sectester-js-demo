@@ -532,3 +532,7 @@ Please read [contributing guidelines here](./CONTRIBUTING.md).
 Copyright © 2022 [Bright Security](https://brightsec.com/).
 
 This project is licensed under the MIT License - see the [LICENSE file](LICENSE) for details.
+
+## Notes
+
+This section documents local development tips.
