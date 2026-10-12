@@ -46,7 +46,47 @@ export class MiscController {
   })
   @ApiBody({ type: FetchDto })
   public fetch(@Body() body: FetchDto): Promise<string> {
-    return this.fileService.fetch(body.url);
+    if (!body || typeof body.url !== 'string') {
+      throw new BadRequestException('URL must be provided as a string');
+    }
+
+    return this.fileService.fetch(this.normalizeFetchUrl(body.url));
+  }
+
+  private normalizeFetchUrl(url: string): string {
+    const trimmedUrl = url.trim();
+
+    if (trimmedUrl === '') {
+      throw new BadRequestException('URL must be provided as a string');
+    }
+
+    let parsedUrl: URL;
+
+    try {
+      parsedUrl = new URL(trimmedUrl);
+    } catch {
+      throw new BadRequestException('URL must be a valid absolute URL');
+    }
+
+    const hostname = parsedUrl.hostname.replace(/\.$/, '').toLowerCase();
+
+    if (parsedUrl.protocol !== 'https:') {
+      throw new BadRequestException('Only HTTPS URLs are allowed');
+    }
+
+    if (parsedUrl.username || parsedUrl.password) {
+      throw new BadRequestException('Credentials in URL are not allowed');
+    }
+
+    if (parsedUrl.port && parsedUrl.port !== '443') {
+      throw new BadRequestException('Custom ports are not allowed');
+    }
+
+    if (!['example.com', 'www.example.com'].includes(hostname)) {
+      throw new BadRequestException('URL host is not allowed');
+    }
+
+    return parsedUrl.toString();
   }
 
   @Post('/xml')

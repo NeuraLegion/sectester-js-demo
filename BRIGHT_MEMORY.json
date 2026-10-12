@@ -1,0 +1,14 @@
+{
+  "version": 2,
+  "generatedAt": "2026-10-12T10:11:49.196Z",
+  "instructionHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "startup": {
+    "command": "docker build -t sectester-js-demo-ci . && docker run -d --name sectester-js-demo-ci -p 3000:3000 sectester-js-demo-ci",
+    "port": 3000,
+    "healthCheckPath": "/users",
+    "context": "Created a local .env using the existing host BRIGHT_HOSTNAME/BRIGHT_TOKEN values so the repo Dockerfile could COPY it, then built and ran the provided Dockerfile. Verified the NestJS app is serving on port 3000: GET /api returned 200 Swagger UI and GET /users returned 200 with JSON data. Container logs show Nest application successfully started."
+  },
+  "scanPrep": {
+    "context": "Summary: Inspected the NestJS app and its running container, found no implemented rate limiting, lockout, CAPTCHA, CSRF enforcement, session auth, or other scanner-blocking controls, and verified with six rapid POST requests to a real write endpoint (/users) that no throttling is active.\nRecovery guidance (security controls): This app currently exposes unauthenticated CRUD-style endpoints and does not have a login/auth flow to prepare for DAST. I confirmed this by searching the source for auth/throttle/captcha/CSRF controls, checking the running container environment, reviewing the live OpenAPI document at http://localhost:3000/api-json, and sending 6 rapid POST requests to http://localhost:3000/users with the same JSON body; all returned 201 with no 429/403/throttle message. If a future pass adds protections, rebuild with the verified command `docker build -t sectester-js-demo-ci . && docker run -d --name sectester-js-demo-ci -p 3000:3000 sectester-js-demo-ci`, then re-check source and runtime for packages/config such as `@nestjs/throttler`, `express-rate-limit`, guards, middleware, proxy/WAF config, and any server-side CAPTCHA verification before re-running rapid POST verification.\nRecovery guidance (2FA/MFA): No 2FA/MFA bypass is needed for this app. Evidence: repository searches for twoFactor/2fa/mfa/totp/otp/authenticator returned no app-code matches; `src/users/user.entity.ts` only defines `id`, `firstName`, `lastName`, and `isActive`; the migration creates only those columns; `/api-json` exposes no auth security scheme; and `GET http://localhost:3000/users` returns 200 JSON directly. If a future pass needs to re-check, rebuild/run with `docker build -t sectester-js-demo-ci . && docker run -d --name sectester-js-demo-ci -p 3000:3000 sectester-js-demo-ci`, then verify user activity with `docker exec sectester-js-demo-ci node -e \"const sqlite3=require('sqlite3'); const db=new sqlite3.Database('test.db'); db.all('select id, first_name, last_name, is_active from user order by id', (e,r)=>{ if(e) throw e; console.log(r); db.close();});\"` and confirm `/users` still returns 200."
+  }
+}
