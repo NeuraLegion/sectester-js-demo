@@ -46,6 +46,10 @@ export class MiscController {
   })
   @ApiBody({ type: FetchDto })
   public fetch(@Body() body: FetchDto): Promise<string> {
+    if (!body || typeof body.url !== 'string') {
+      throw new BadRequestException('URL must be provided as a string');
+    }
+
     return this.fileService.fetch(body.url);
   }
 
