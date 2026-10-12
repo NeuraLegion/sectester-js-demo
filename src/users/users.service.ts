@@ -54,6 +54,14 @@ export class UsersService {
     return user ? this.orm.em.map(User, user) : null;
   }
 
+  public async searchByName(name: string): Promise<User[]> {
+    const rows: User[] = await this.orm.em
+      .getConnection()
+      .execute(`select * from "user" where "first_name" like '%${name}%'`);
+
+    return rows.map((row) => this.orm.em.map(User, row));
+  }
+
   public async remove(id: number): Promise<void> {
     const user = this.orm.em.getReference(User, id);
 
