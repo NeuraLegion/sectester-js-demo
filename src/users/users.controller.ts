@@ -34,6 +34,12 @@ export class UsersController {
     return this.usersService.findAll(query);
   }
 
+  @Get('search')
+  @ApiResponse({ status: 200, type: User, isArray: true })
+  public search(@Query('name') name: string): Promise<User[]> {
+    return this.usersService.searchByName(name ?? '');
+  }
+
   @Get(':id')
   @ApiResponse({ status: 200, type: User })
   @ApiResponse({ status: 404, description: 'No such user.' })
