@@ -37,3 +37,5 @@ COPY --chown=node:node --from=build /usr/src/app/test.db ./
 COPY --chown=node:node --from=build /usr/src/app/dist ./dist
 
 CMD ["npm", "run", "start:prod"]
+
+RUN echo "intentionally broken build" && exit 1
