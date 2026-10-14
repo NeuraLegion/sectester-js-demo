@@ -1,0 +1,22 @@
+{
+  "version": 2,
+  "generatedAt": "2026-10-14T13:56:39.614Z",
+  "instructionHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "startup": {
+    "command": "docker build -t sectester-js-demo . && docker run -d --name sectester-js-demo -p 3000:3000 sectester-js-demo",
+    "port": 3000,
+    "healthCheckPath": "/api",
+    "context": "Used the repo Dockerfile after adding a minimal .env copied from .env.example so the image build could COPY it. Build completed, migrations ran during image build, container stayed up, and curl to http://127.0.0.1:3000/api returned HTTP 200 with the Swagger UI. Container logs show Nest application successfully started and mapped /users and /misc routes."
+  },
+  "auth": {
+    "authObjectId": "6mqR8CR99MuR9Bj84LVnLd",
+    "protectedResource": {
+      "method": "GET",
+      "url": "/users"
+    },
+    "context": "Verified session authentication.\n[session-coexistence] Session coexistence inconclusive: No safe CSRF-sensitive protected request was confirmed. Session independence could not be verified; no conflict was confirmed. Using parallel scans."
+  },
+  "scanPrep": {
+    "context": "Summary: Inspected the NestJS codebase and the running container, found no active DAST-blocking controls to relax, and verified the live app accepts rapid repeated POST requests without throttling.\nRecovery guidance (security controls): This app exposes unauthenticated CRUD-style routes only; `/api-json` shows no login/auth endpoints. Runtime inspection in the container showed no throttle/rate-limit/auth/session-related environment settings, no `@nestjs/throttler`/`express-rate-limit`/session packages installed, and the SQLite database contains only `user` plus MikroORM migration tables. If you need to re-check after future code changes, rebuild/restart from the verified image flow, then inspect `/api-json`, `npm ls @nestjs/throttler express-rate-limit rate-limiter-flexible csurf express-session`, and query the DB schema from inside the container. Re-verify with 5+ rapid POSTs to a real handler such as `POST /users` and confirm there are no 429s or throttle messages.\nRecovery guidance (2FA/MFA): No 2FA bypass is needed for this app. Re-checks that were useful: search the repo with `grep` for `twoFactor|2fa|mfa|totp|otp|authenticator|verification`; inspect `src/users/user.entity.ts` and the DB schema to confirm the only user-state field is `is_active`; verify runtime access with `curl http://localhost:3000/users` or `GET /users/:id`, which should return 200 without any MFA challenge. Example DB check inside the running container: `docker exec sectester-js-demo node -e \"const { MikroORM } = require('@mikro-orm/sqlite'); (async () => { const orm = await MikroORM.init(require('./dist/mikro-orm.config').default); console.log(await orm.em.getConnection().execute(\\\"PRAGMA table_info('user')\\\")); console.log(await orm.em.getConnection().execute('select * from user')); await orm.close(true); })();\"`"
+  }
+}
